@@ -23,9 +23,13 @@ docker container attach CONTAINER_NAME
 
 docker container stop CONTAINER_NAME
 
-docker compose up -d --build
+sudo docker compose up -d --build
 
-docker compose down
+sudo docker compose down
+
+sudo docker compose ps
+
+sudo docker compose run --rm k6
 
 ## REDIS JOB QUEUE
 
