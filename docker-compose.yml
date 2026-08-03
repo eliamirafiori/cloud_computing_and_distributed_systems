@@ -1,0 +1,64 @@
+networks:
+  my-network:
+    driver: bridge
+
+services:
+  redis:
+    image: redis
+    container_name: my_redis
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    container_name: my_ollama
+    volumes:
+      - ./ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - my-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: "all"
+              capabilities: [gpu]
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: WorkerDockerfile
+    container_name: my_worker
+    command: python app/worker.py
+    depends_on:
+      - redis
+      - ollama
+
+  be:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: my_backend
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    networks:
+      - my-network
+    restart: unless-stopped
+    depends_on:
+    - redis
+    - ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
