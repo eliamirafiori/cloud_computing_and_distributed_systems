@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from redis import Redis
 from rq import Queue
 
-from tasks import custom_function
+from .tasks import custom_function
 
 app = FastAPI()
 
@@ -24,6 +24,6 @@ async def main():
 @app.get("/inference/")
 async def inference():
 
-    job = q.enqueue(custom_function, "image.png")
+    job = q.enqueue(custom_function, "./src/image.png")
 
     return {"job_id": job.id}

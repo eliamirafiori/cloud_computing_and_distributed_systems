@@ -35,14 +35,16 @@ services:
   worker:
     build:
       context: ./backend
-      dockerfile: WorkerDockerfile
+      dockerfile: Dockerfile
+    command: rq worker --with-scheduler --url redis://redis:6379/0 default
     container_name: my_worker
-    command: python app/worker.py
+    networks:
+      - my-network
     depends_on:
       - redis
       - ollama
 
-  be:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
