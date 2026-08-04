@@ -24,6 +24,9 @@ services:
     networks:
       - my-network
     restart: unless-stopped
+    environment:
+     - OLLAMA_NUM_PARALLEL=2
+     - OLLAMA_MAX_LOADED_MODELS=1
     deploy:
       resources:
         reservations:
@@ -37,7 +40,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: rq worker --with-scheduler --url redis://redis:6379/0 default
-    container_name: my_worker
+    # container_name: my_worker
     networks:
       - my-network
     depends_on:

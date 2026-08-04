@@ -23,7 +23,9 @@ docker container attach CONTAINER_NAME
 
 docker container stop CONTAINER_NAME
 
-sudo docker compose up -d --build
+sudo docker compose up -d --build --scale worker=4
+
+sudo docker compose up --scale worker=4
 
 sudo docker compose down
 

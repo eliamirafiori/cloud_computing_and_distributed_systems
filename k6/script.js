@@ -1,6 +1,7 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
+/*
 export const options = {
   scenarios: {
     // 1. Smoke test — confirms basic correctness before anything heavier
@@ -71,8 +72,14 @@ export const options = {
   //   http_req_failed: ["rate<0.01"],
   // },
 };
+*/
 
-export function hitInference() {
+export const options = {
+  vus: 5000,
+  duration: '10s',
+};
+
+export default function hitInference() {
   const enqueueRes = http.get("http://backend:8000/embed/ciao_mi_chiamo_elia");
   check(enqueueRes, { "enqueued 200": (r) => r.status === 200 });
 
@@ -95,3 +102,32 @@ export function hitInference() {
     "job finished": (r) => r && r.status === "finished",
   });
 }
+
+/*
+  TOTAL RESULTS 
+
+    checks_total.......: 9671   5.284696/s
+    checks_succeeded...: 53.60% 5184 out of 9671
+    checks_failed......: 46.39% 4487 out of 9671
+
+    ✓ enqueued 200
+    ✗ job finished
+      ↳  0% — ✓ 21 / ✗ 4487
+
+    HTTP
+    http_req_duration..............: avg=3.73ms min=703.84µs med=1.78ms max=135.07ms p(90)=7.58ms p(95)=14.47ms
+      { expected_response:true }...: avg=3.73ms min=703.84µs med=1.78ms max=135.07ms p(90)=7.58ms p(95)=14.47ms
+    http_req_failed................: 0.00%  0 out of 304074
+    http_reqs......................: 304074 166.16056/s
+
+    EXECUTION
+    dropped_iterations.............: 6293   3.438796/s
+    iteration_duration.............: avg=1m0s   min=22.05s   med=1m0s   max=1m0s     p(90)=1m0s   p(95)=1m0s   
+    iterations.....................: 4508   2.463387/s
+    vus............................: 16     min=16          max=1025
+    vus_max........................: 1320   min=820         max=1320
+
+    NETWORK
+    data_received..................: 59 MB  32 kB/s
+    data_sent......................: 35 MB  19 kB/s
+*/
