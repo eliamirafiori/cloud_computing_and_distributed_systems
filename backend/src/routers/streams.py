@@ -17,11 +17,7 @@ from sqlmodel import Session, select
 
 from ..commons.constants import AUDIO_DIRECTORY
 from ..commons.common_query_params import CommonQueryParams
-from ..commons.enums import Scope
-from ..core.auth_utils import get_current_active_user
 from ..core.database import get_session
-from ..crud.customers import read_song, update_song
-from ..models.analysis_model import Song, SongCreate, SongPublic, SongUpdate
 
 # dependency injection to get the current user session
 SessionDep = Annotated[Session, Depends(get_session)]
