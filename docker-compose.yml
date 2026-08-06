@@ -3,6 +3,31 @@ networks:
     driver: bridge
 
 services:
+  database:
+    image: pgvector/pgvector:pg18-trixie
+    container_name: miraflix_db
+    environment:
+      PG_ROOT_PASSWORD: ${PG_ROOT_PASSWORD}
+      PG_DATABASE: ${PG_DB}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+    volumes:
+      - ./data/db:/var/lib/mysql
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis
     container_name: my_redis
@@ -25,8 +50,8 @@ services:
       - my-network
     restart: unless-stopped
     environment:
-     - OLLAMA_NUM_PARALLEL=2
-     - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_NUM_PARALLEL=2
+      - OLLAMA_MAX_LOADED_MODELS=1
     deploy:
       resources:
         reservations:
@@ -62,6 +87,7 @@ services:
     depends_on:
       - redis
       - ollama
+      - database
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
     #   interval: 10s

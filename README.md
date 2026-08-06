@@ -2,9 +2,10 @@
 
 ## MODEL
 
-- https://github.com/openbmb/minicpm
-- https://github.com/OpenBMB/MiniCPM-V/
-- https://ollama.com/library/minicpm-v4.6
+- [GitHub page for MiniCPM](https://github.com/openbmb/minicpm)
+- [GitHub page for MiniCPM-V](https://github.com/OpenBMB/MiniCPM-V/)
+- [Ollama page for MiniCPM-V](https://ollama.com/library/minicpm-v4.6)
+- [Ollama page for embeddinggemma](https://ollama.com/library/embeddinggemma)
 
 ## FRAMEWORK
 
@@ -32,6 +33,11 @@ sudo docker compose down
 sudo docker compose ps
 
 sudo docker compose run --rm k6
+
+## POSTGRESQL + pgvector
+
+- [GitHub page for pgvector with Docker](https://github.com/pgvector/pgvector#docker)
+- [GitHub page for pgvector usage with SQLModel](https://github.com/pgvector/pgvector-python#sqlmodel)
 
 ## REDIS JOB QUEUE
 
