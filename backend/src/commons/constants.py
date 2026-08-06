@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 # Load .env file
 load_dotenv()
 
-PG_USER = os.getenv("PG_USER")
-PG_PASSWORD = os.getenv("PG_PASSWORD")
-PG_SERVER = os.getenv("PG_SERVER")
-PG_PORT = os.getenv("PG_PORT")
-PG_DB = os.getenv("PG_DB")
+POSTGRES_USER = os.getenv("POSTGRES_USER")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+POSTGRES_SERVER = os.getenv("POSTGRES_SERVER")
+POSTGRES_PORT = os.getenv("POSTGRES_PORT")
+POSTGRES_DB = os.getenv("POSTGRES_DB")
 
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 

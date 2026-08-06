@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir --upgrade -r ./requirements.txt &&\
     pip install "psycopg[binary]" &&\
     pip install pgvector &&\
     pip install python-dotenv &&\
+    pip install aiofiles &&\
     pip install redis &&\
     pip install rq &&\
     pip install ollama

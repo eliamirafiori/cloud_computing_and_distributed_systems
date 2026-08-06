@@ -48,16 +48,12 @@ async def post_video(
     :type session: Session
     :param request: HTTP Request
     :type request: Request
-    :param analysis_id: Analysis ID
-    :type analysis_id: int
-    :param study_title: Title of the study
-    :type study_title: str
-    :param role: Participant's role [attendee | speaker]
-    :type role: str
+    :param video_model: Video model
+    :type video_model: VideoCreate
     :param file: Video file
     :type file: UploadFile
-    :return: The analysis model
-    :rtype: AnalysisPublic
+    :return: The video model
+    :rtype: VideoPublic
     """
     # Validate file
     validate_video_file(file)
@@ -73,8 +69,11 @@ async def post_video(
     # Create directory if it doesn't exists
     os.makedirs(f"{base_dir}", exist_ok=True)
 
+    # Get file extension, it contains the "."
+    _, ext = os.path.splitext(file.filename)
+
     # Construct the absolute path
-    video_path = os.path.join(f"{base_dir}/{file.filename}")
+    video_path = os.path.join(f"{base_dir}/{db_video.id}{ext}")
 
     # Save the video on disk
     async with aiofiles.open(video_path, "wb") as out_file:
@@ -82,7 +81,7 @@ async def post_video(
             await out_file.write(content)  # async write chunk
 
     # Save the path to the video_url field
-    file_relative_path = f"{file.filename}"
+    file_relative_path = f"{db_video.id}{ext}"
     # url_for() method to generate a full URL to another endpoint in our app, in this case one named "media"
     file_url = request.url_for("media", path=file_relative_path)
 
