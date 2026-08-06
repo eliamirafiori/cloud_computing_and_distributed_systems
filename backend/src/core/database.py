@@ -4,18 +4,16 @@ from sqlmodel import Session, SQLModel, create_engine
 from sqlalchemy import text
 
 from ..commons.constants import (
-    PG_DB,
-    PG_PASSWORD,
-    PG_PORT,
-    PG_SERVER,
-    PG_USER,
+    POSTGRES_DB,
+    POSTGRES_PASSWORD,
+    POSTGRES_PORT,
+    POSTGRES_SERVER,
+    POSTGRES_USER,
 )
 
 # PostgreSQl database URL
 # needs Python package: pip install "psycopg[binary]"
-postgresql_url = (
-    f"postgresql+psycopg://{PG_USER}:{PG_PASSWORD}@{PG_SERVER}:{PG_PORT}/{PG_DB}"
-)
+postgresql_url = f"postgresql+psycopg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 connect_args = {"check_same_thread": False}
 engine = create_engine(
