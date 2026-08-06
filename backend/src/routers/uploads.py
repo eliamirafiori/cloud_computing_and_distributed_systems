@@ -65,6 +65,8 @@ async def post_video(
     # Create the new video instance
     db_video: VideoPublic = await create_video(session=session, video=video_model)
 
+    # TODO: start job to embed the description of the video
+
     # Get the media directory
     base_dir = f"data/media/"
 
