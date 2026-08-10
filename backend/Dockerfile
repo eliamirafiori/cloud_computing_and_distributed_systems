@@ -9,7 +9,6 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 RUN pip install --no-cache-dir --upgrade -r ./requirements.txt &&\
     pip install "fastapi[standard]" &&\
     pip install sqlmodel &&\
-    pip install orjson &&\
     pip install "psycopg[binary]" &&\
     pip install pgvector &&\
     pip install python-dotenv &&\

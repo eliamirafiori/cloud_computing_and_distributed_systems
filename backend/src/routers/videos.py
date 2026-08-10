@@ -5,8 +5,8 @@ from sqlmodel import Session
 
 from ..commons.common_query_params import CommonQueryParams
 from ..core.database import get_session
-from ..crud.video import read_video
-from ..models.video_model import Video, VideoPublic
+from ..crud.video import read_video, update_video
+from ..models.video_model import Video, VideoPublic, VideoUpdate
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
@@ -38,3 +38,12 @@ async def get_user(
     :rtype: VideoPublic | None
     """
     return await read_video(session=session, id=video_id)
+
+
+@router.patch("/{video_id}", response_model=VideoPublic)
+async def patch_video(
+    session: SessionDep,
+    video_id: Annotated[int, Path()],
+    video_model: VideoUpdate,
+):
+    return await update_video(session=session, id=video_id, video_model=video_model)

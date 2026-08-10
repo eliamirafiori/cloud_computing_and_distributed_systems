@@ -1,12 +1,8 @@
 import base64
 import json
+import httpx
 
 from ollama import Client
-from sqlmodel import Session
-
-from ..core.database import engine, get_session_directly
-from ..crud.video import update_video
-from ..models.video_model import VideoUpdate
 
 client = Client(host="http://ollama:11434")
 
@@ -42,25 +38,23 @@ def custom_function(image_path):
     return response.message.content
 
 
+BACKEND_URL = "http://my_backend:8000"  # service name from docker-compose
+
+
 def embed_video_description(video_id: int, description: str):
-    """Generate an embedding for a video's description and persist it."""
-    ensure_model()  # no-op if already pulled, but adds overhead each call
+    ensure_model()
 
     print("STARTING EMBEDDING")
 
-    response = client.embed(
-        model=MODEL_NAME,
-        input=description,
-    )
+    response = client.embed(model=MODEL_NAME, input=description)
     embedding = response["embeddings"][0]
 
-    with get_session_directly() as session:
-        update_video(
-            session=session,
-            id=video_id,
-            video_model=VideoUpdate(embedding=embedding),
+    with httpx.Client(base_url=BACKEND_URL, timeout=10.0) as http_client:
+        resp = http_client.patch(
+            f"/videos/{video_id}",
+            json={"embedding": embedding},
         )
- 
-    print(response.embeddings)
+        resp.raise_for_status()
 
+    print(response.embeddings)
     return json.dumps(response.embeddings)
