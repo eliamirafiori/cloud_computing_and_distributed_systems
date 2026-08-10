@@ -14,12 +14,15 @@ from fastapi import (
     File,
     UploadFile,
     Response,
+    Form,
 )
 from sqlmodel import Session, select
+
 from ..utils.file_utils import validate_video_file
 from ..core.database import get_session
 from ..crud.video import create_video, update_video
 from ..models.video_model import VideoCreate, VideoPublic, VideoUpdate
+from ..commons.constants import VIDEO_DIRECTORY
 
 # Dependency injection to get the current user session
 SessionDep = Annotated[Session, Depends(get_session)]
@@ -38,7 +41,7 @@ router = APIRouter(
 async def post_video(
     session: SessionDep,  # Request must pass a JWT, with this dependency we extract its data to verify the user
     request: Request,  # Represents the incoming HTTP request from the client
-    video_model: VideoCreate,  # Video model
+    video_model: Annotated[str, Form()],  # Video model
     file: Annotated[UploadFile, File()],  # the song in a file-like object
 ) -> Any:  # Returns Any because it gets overrided by the response_model
     """
@@ -55,6 +58,13 @@ async def post_video(
     :return: The video model
     :rtype: VideoPublic
     """
+
+    # Parse the JSON string into your pydantic model
+    try:
+        video_model = VideoCreate.model_validate_json(video_model)
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
     # Validate file
     validate_video_file(file)
 
@@ -82,8 +92,10 @@ async def post_video(
 
     # Save the path to the video_url field
     file_relative_path = f"{db_video.id}{ext}"
-    # url_for() method to generate a full URL to another endpoint in our app, in this case one named "media"
-    file_url = request.url_for("media", path=file_relative_path)
+    # url_for() method to generate a full URL to another endpoint in our app, in this case one named "data"
+    file_url = request.url_for(VIDEO_DIRECTORY, path=file_relative_path)
 
     updated_video: VideoUpdate = VideoUpdate(video_url=str(file_url))
-    return await update_video(session=session, id=db_video.id, analysis=updated_video)
+    return await update_video(
+        session=session, id=db_video.id, video_model=updated_video
+    )

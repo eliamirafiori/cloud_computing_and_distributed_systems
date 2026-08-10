@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Body, Depends, HTTPException
 from sqlmodel import Session, or_, select
 
-from ..commons import CommonQueryParams
+from ..commons.common_query_params import CommonQueryParams
 from ..models.video_model import Video, VideoCreate, VideoPublic, VideoUpdate
 
 
@@ -78,7 +78,7 @@ async def read_video(
 async def update_video(
     session: Session,
     id: int,
-    video: VideoUpdate,
+    video_model: VideoUpdate,
 ) -> VideoPublic:
     """
     Update specific video.
@@ -98,7 +98,7 @@ async def update_video(
     if not db_video:  # Check if the video exists
         raise HTTPException(status_code=404, detail="Video not found")
 
-    video_data = video.model_dump(exclude_unset=True)  # Get only updated values
+    video_data = video_model.model_dump(exclude_unset=True)  # Get only updated values
     for key, value in video_data.items():  # Iterate through analysis's data
         # Map key and value from user's data to its db instance
         setattr(db_video, key, value)

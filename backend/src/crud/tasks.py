@@ -37,7 +37,7 @@ def custom_function(image_path):
     return response.message.content
 
 
-def embed_function(content: str):
+async def embed_function(content: str):
     """ """
     ensure_model()
 

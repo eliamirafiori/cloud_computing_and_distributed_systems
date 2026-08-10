@@ -26,14 +26,17 @@ from rq import Queue
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
 
-from .tasks import custom_function, embed_function
+from .crud.tasks import custom_function, embed_function
 from .routers import streams, uploads
+from .core.lifespan import lifespan
+from .commons.constants import VIDEO_DIRECTORY
 
 # Load environment variables from the .env file (if present)
 load_dotenv()
 
 app = FastAPI(
     title="MiraFLIX",
+    lifespan=lifespan,
     default_response_class=ORJSONResponse,  # It's faster than JSONResponse
 )
 
@@ -48,11 +51,13 @@ app.add_middleware(
 
 # Create the public directory if it doesn't exists (relative path to where the Docker is started)
 os.makedirs(
-    "./data", exist_ok=True
+    f"./{VIDEO_DIRECTORY}", exist_ok=True
 )  # TODO: find a better name or best practices for media streaming
 
 # Mount the public directory
-app.mount("/data", StaticFiles(directory="./data"), name="data")
+app.mount(
+    f"/{VIDEO_DIRECTORY}", StaticFiles(directory="./data/media"), name=VIDEO_DIRECTORY
+)
 
 # Including all the routers
 app.include_router(streams.router)
