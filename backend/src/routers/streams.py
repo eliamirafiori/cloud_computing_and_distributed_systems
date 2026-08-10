@@ -8,7 +8,6 @@ from fastapi import (
     Depends,
     HTTPException,
     Path,
-    Security,
     Request,
 )
 from fastapi.responses import Response, StreamingResponse
@@ -31,6 +30,7 @@ router = APIRouter(
 
 @router.get(
     "/video/{video_id}",  # endpoint url after the prefix specified earlier
+    name="stream_video",  # Name of the endpoint, FastAPI uses it to recognize this endpoint
 )
 async def get_video(
     session: SessionDep,  # request must pass a JWT, with this dependency we extract its data to verify the user
@@ -39,11 +39,23 @@ async def get_video(
 ):
 
     # Construct the absolute path
-    video_path = os.path.join(f"{VIDEO_DIRECTORY}/{video_id}.mp3")
+    video_path = os.path.join(f"data/media/{video_id}.mp4")
 
     try:
         file_size = os.path.getsize(video_path)
         range_header = request.headers.get("range")
+
+        def iter_file(path: str, start: int, end: int, chunk_size: int = 64 * 1024):
+            with open(path, "rb") as f:
+                f.seek(start)
+                remaining = end - start + 1
+                while remaining > 0:
+                    chunk = f.read(min(chunk_size, remaining))
+                    if not chunk:
+                        break
+                    remaining -= len(chunk)
+                    yield chunk  # yields bytes, not int, so StreamingResponse works correctly
+
         if range_header:
             # Parse the Range header
             range_start, range_end = range_header.replace("bytes=", "").split("-")
@@ -56,9 +68,9 @@ async def get_video(
                 )
 
             chunk_size = range_end - range_start + 1
-            with open(video_path, "rb") as video_file:
-                video_file.seek(range_start)
-                data = video_file.read(chunk_size)
+            # with open(video_path, "rb") as video_file:
+            #     video_file.seek(range_start)
+            #     data = video_file.read(chunk_size)
 
             headers = {
                 "Content-Range": f"bytes {range_start}-{range_end}/{file_size}",
@@ -66,17 +78,33 @@ async def get_video(
                 "Content-Length": str(chunk_size),
                 "Content-Type": "video/mp4",
             }
-            return StreamingResponse(data, status_code=206, headers=headers)
+            return StreamingResponse(
+                iter_file(
+                    path=video_path,
+                    start=range_start,
+                    end=range_end,
+                    chunk_size=chunk_size,
+                ),
+                status_code=206,
+                headers=headers,
+            )
 
         # If no Range header, return the entire file
-        with open(video_path, "rb") as video_file:
-            data = video_file.read()
+        # with open(video_path, "rb") as video_file:
+        #     data = video_file.read()
 
         headers = {
             "Content-Length": str(file_size),
             "Content-Type": "video/mp4",
         }
-        return StreamingResponse(data, headers=headers)
+        return StreamingResponse(
+            iter_file(
+                path=video_path,
+                start=0,
+                end=file_size - 1,
+            ),
+            headers=headers,
+        )
 
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Video file not found")

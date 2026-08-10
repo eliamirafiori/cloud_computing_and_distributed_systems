@@ -13,6 +13,8 @@ class VideoBase(SQLModel):
 
     :param video_url: Video url
     :type video_url: str | None
+    :param streaming_url: Streaming url
+    :type streaming_url: str | None
     :param description: Description of the uploaded video
     :type description: str | None
     :param embedding: Video's embedding
@@ -20,8 +22,9 @@ class VideoBase(SQLModel):
     """
 
     video_url: str | None = Field(default=None)
+    streaming_url: str | None = Field(default=None)
     description: str | None = Field(default=None)
-    embedding: list[float] | None = Field(default=None, sa_type=VECTOR(3))
+    embedding: list[float] | None = Field(default=None, sa_type=VECTOR(768))
 
     model_config = {
         "json_schema_extra": {
@@ -29,8 +32,9 @@ class VideoBase(SQLModel):
                 {
                     "video_id": 1,
                     "video_url": "http://...",
+                    "streaming_url": "http://...",
                     "description": "In this video...",
-                    "embedding": [1, 2, 3],
+                    "embedding": [1, 2, 3, ...],
                 }
             ]
         },
@@ -87,6 +91,8 @@ class VideoUpdate(VideoBase):
 
     :param video_url: Video url
     :type video_url: str | None
+    :param streaming_url: Streaming url
+    :type streaming_url: str | None
     :param description: Description of the uploaded video
     :type description: str | None
     :param embedding: Video's embedding
@@ -94,5 +100,6 @@ class VideoUpdate(VideoBase):
     """
 
     video_url: str | None = Field(default=None)
+    streaming_url: str | None = Field(default=None)
     description: int | None = Field(default=None)
-    embedding: str | None = Field(default=None)
+    embedding: list[float] | None = Field(default=None, sa_type=VECTOR(768))

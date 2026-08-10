@@ -1,28 +1,29 @@
 import os
 import subprocess
-import aiofiles
-
 from typing import Annotated, Any
+
+import aiofiles
 from fastapi import (
     APIRouter,
     BackgroundTasks,
-    Request,
     Depends,
-    HTTPException,
-    Path,
-    Security,
     File,
-    UploadFile,
-    Response,
     Form,
+    HTTPException,
+    Request,
+    UploadFile,
 )
-from sqlmodel import Session, select
+from sqlmodel import Session
+from pydantic import ValidationError
+from redis import Redis
+from rq import Queue
 
-from ..utils.file_utils import validate_video_file
+from ..commons.constants import VIDEO_DIRECTORY
 from ..core.database import get_session
+from ..crud.tasks import embed_video_description
 from ..crud.video import create_video, update_video
 from ..models.video_model import VideoCreate, VideoPublic, VideoUpdate
-from ..commons.constants import VIDEO_DIRECTORY
+from ..utils.file_utils import validate_video_file
 
 # Dependency injection to get the current user session
 SessionDep = Annotated[Session, Depends(get_session)]
@@ -32,6 +33,9 @@ router = APIRouter(
     prefix="/uploads",  # Router prefix url
     tags=["uploads"],  # Router tag
 )
+
+redis_conn = Redis(host="redis", port=6379)
+q = Queue("videos", connection=redis_conn)
 
 
 @router.post(
@@ -71,7 +75,8 @@ async def post_video(
     # Create the new video instance
     db_video: VideoPublic = await create_video(session=session, video=video_model)
 
-    # TODO: start job to embed the description of the video
+    # Start background job to embed the description of the video
+    q.enqueue(embed_video_description, db_video.id, db_video.description)
 
     # Get the media directory
     base_dir = f"data/media/"
@@ -95,7 +100,13 @@ async def post_video(
     # url_for() method to generate a full URL to another endpoint in our app, in this case one named "data"
     file_url = request.url_for(VIDEO_DIRECTORY, path=file_relative_path)
 
-    updated_video: VideoUpdate = VideoUpdate(video_url=str(file_url))
+    # Now we generate a public URL for the endpoint named "stream_video"
+    streaming_url = request.url_for("stream_video", video_id=db_video.id)
+
+    updated_video: VideoUpdate = VideoUpdate(
+        video_url=str(file_url),
+        streaming_url=str(streaming_url),
+    )
     return await update_video(
         session=session, id=db_video.id, video_model=updated_video
     )

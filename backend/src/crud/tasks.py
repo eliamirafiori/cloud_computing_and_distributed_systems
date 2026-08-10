@@ -2,6 +2,11 @@ import base64
 import json
 
 from ollama import Client
+from sqlmodel import Session
+
+from ..core.database import engine, get_session_directly
+from ..crud.video import update_video
+from ..models.video_model import VideoUpdate
 
 client = Client(host="http://ollama:11434")
 
@@ -37,13 +42,25 @@ def custom_function(image_path):
     return response.message.content
 
 
-async def embed_function(content: str):
-    """ """
-    ensure_model()
+def embed_video_description(video_id: int, description: str):
+    """Generate an embedding for a video's description and persist it."""
+    ensure_model()  # no-op if already pulled, but adds overhead each call
+
+    print("STARTING EMBEDDING")
 
     response = client.embed(
         model=MODEL_NAME,
-        input=content,
+        input=description,
     )
-    print(json.dumps(response.embeddings))
+    embedding = response["embeddings"][0]
+
+    with get_session_directly() as session:
+        update_video(
+            session=session,
+            id=video_id,
+            video_model=VideoUpdate(embedding=embedding),
+        )
+ 
+    print(response.embeddings)
+
     return json.dumps(response.embeddings)
