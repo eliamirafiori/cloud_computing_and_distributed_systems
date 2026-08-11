@@ -102,5 +102,5 @@ class VideoUpdate(VideoBase):
 
     video_url: str | None = Field(default=None)
     streaming_url: str | None = Field(default=None)
-    description: int | None = Field(default=None)
+    description: str | None = Field(default=None)
     embedding: list[float] | None = Field(default=None, sa_type=VECTOR(768))
