@@ -3,7 +3,7 @@ from rq import Worker, Queue, Connections
 
 redis_conn = Redis(host="redis", port=6379)
 
-listen = ["default"]
+listen = ["videos"]
 
 if __name__ == "__main__":
     with Connections(redis_conn):
