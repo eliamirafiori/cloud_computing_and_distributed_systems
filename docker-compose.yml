@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
-      - ./data/db:/var/lib/mysql
+      - ./data/db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
