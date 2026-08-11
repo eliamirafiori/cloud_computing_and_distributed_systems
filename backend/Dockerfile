@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ./requirements.txt ./
 
-RUN curl -fsSL https://ollama.com/install.sh | sh
+# RUN curl -fsSL https://ollama.com/install.sh | sh
 
 RUN pip install --no-cache-dir --upgrade -r ./requirements.txt &&\
     pip install "fastapi[standard]" &&\
