@@ -64,7 +64,8 @@ app.include_router(videos.router)
 app.include_router(searches.router)
 
 redis_conn = Redis(host="redis", port=6379)
-q = Queue(connection=redis_conn)
+# Create a queue for video processing tasks
+q = Queue("videos", connection=redis_conn)
 
 
 @app.get("/", status_code=200)
