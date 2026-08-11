@@ -1,0 +1,10 @@
+fastapi[standard]==0.141.1
+sqlmodel==0.0.39
+psycopg[binary]==3.3.4
+pgvector==0.5.0
+python-dotenv==1.2.2
+aiofiles==25.1.0
+redis==8.1.0
+rq==2.10.0
+ollama==0.6.2
+httpx==0.28.1
