@@ -117,12 +117,12 @@ services:
   k6:
     image: grafana/k6
     container_name: my_k6
-    # Available scenarios: smoke, load, queue, search, stress
-    #   docker compose run --rm k6 run -e SCENARIO=load /scripts/script.js
-    #   docker compose run --rm k6 run -e SCENARIO=queue /scripts/script.js
-    #   docker compose run --rm k6 run -e SCENARIO=search /scripts/script.js
-    #   docker compose run --rm k6 run -e SCENARIO=stress /scripts/script.js
-    # command: run -e SCENARIO=smoke /scripts/script.js
+    # Default: smoke. Altri scenari:
+    #   docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=load -o experimental-prometheus-rw /scripts/script.js
+    #   docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=queue -o experimental-prometheus-rw /scripts/script.js
+    #   docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=search -o experimental-prometheus-rw /scripts/script.js
+    #   docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=stress -o experimental-prometheus-rw /scripts/script.js
+
     volumes:
       - ./k6:/scripts
     networks:
@@ -131,5 +131,41 @@ services:
     depends_on:
       backend:
         condition: service_started
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: my_prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-remote-write-receiver   # ← indispensabile, senza: 404
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: my_grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_DISABLE_SIGNOUT_MENU=true
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
 
 

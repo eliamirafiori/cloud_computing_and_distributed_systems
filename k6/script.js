@@ -11,12 +11,12 @@ import { Rate, Trend } from "k6/metrics";
  * pipeline and, together with the queue backlog, show the distributed
  * behaviour of the system.
  *
- * Run inside the compose network:
- *   smoke   (default)  docker compose run --rm k6
- *   load               docker compose run --rm k6 run -e SCENARIO=load /scripts/script.js
- *   queue              docker compose run --rm k6 run -e SCENARIO=queue /scripts/script.js
- *   search             docker compose run --rm k6 run -e SCENARIO=search /scripts/script.js
- *   stress             docker compose run --rm k6 run -e SCENARIO=stress /scripts/script.js
+ * Default: smoke. Altri scenari:
+ * docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=load -o experimental-prometheus-rw /scripts/script.js
+ * docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=queue -o experimental-prometheus-rw /scripts/script.js
+ * docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=search -o experimental-prometheus-rw /scripts/script.js
+ * docker compose run --rm -e K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write k6 run -e SCENARIO=stress -o experimental-prometheus-rw /scripts/script.js
+
  *
  * On k8s, point BASE_URL at the service/ingress:
  *   docker run --rm -v ./k6:/scripts -e BASE_URL=http://miraflix:8000 grafana/k6 run /scripts/script.js
