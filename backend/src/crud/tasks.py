@@ -4,6 +4,9 @@ import httpx
 
 from ollama import Client
 
+from ..core.database import get_session_directly
+from ..crud.video import vector_search
+
 client = Client(host="http://ollama:11434")
 
 
@@ -58,3 +61,17 @@ def embed_video_description(video_id: int, description: str):
 
     print(response.embeddings)
     return json.dumps(response.embeddings)
+
+
+def embed_and_search(query: str, top_k: int = 10):
+    ensure_model()
+
+    response = client.embed(model=MODEL_NAME, input=query)
+    embedding = response["embeddings"][0]
+
+    with get_session_directly() as session:
+        results = vector_search(session, embedding, top_k=top_k)
+        return {
+            "query": query,
+            "results": [{"id": r.id, "description": r.description} for r in results],
+        }

@@ -131,3 +131,11 @@ async def delete_video(
 
     session.delete(db_video)  # Delete the instance of the video
     session.commit()  # Commit the changes to the DB
+
+
+def vector_search(session: Session, embedding: list[float], top_k: int = 10):
+    statement = (
+        select(Video).order_by(Video.embedding.cosine_distance(embedding)).limit(top_k)
+    )
+    results = session.exec(statement).all()
+    return results

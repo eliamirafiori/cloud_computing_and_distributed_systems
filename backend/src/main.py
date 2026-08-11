@@ -29,7 +29,7 @@ from rq.job import Job
 from .commons.constants import VIDEO_DIRECTORY
 from .core.lifespan import lifespan
 from .crud.tasks import custom_function, embed_video_description
-from .routers import streams, uploads, videos
+from .routers import streams, uploads, videos, searches
 
 # Load environment variables from the .env file (if present)
 load_dotenv()
@@ -61,6 +61,7 @@ app.mount(
 app.include_router(streams.router)
 app.include_router(uploads.router)
 app.include_router(videos.router)
+app.include_router(searches.router)
 
 redis_conn = Redis(host="redis", port=6379)
 q = Queue(connection=redis_conn)
