@@ -50,11 +50,11 @@ app.add_middleware(
 
 
 # Create the public directory if it doesn't exists (relative path to where the Docker is started)
-os.makedirs(f"./{VIDEO_DIRECTORY}", exist_ok=True)
+os.makedirs("./data/media", exist_ok=True)
 
 # Mount the public directory
 app.mount(
-    f"/{VIDEO_DIRECTORY}", StaticFiles(directory=f"./{VIDEO_DIRECTORY}"), name=VIDEO_DIRECTORY
+    f"/{VIDEO_DIRECTORY}", StaticFiles(directory="./data/media"), name=VIDEO_DIRECTORY
 )
 
 # Including all the routers
