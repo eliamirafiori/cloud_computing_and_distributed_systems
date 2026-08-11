@@ -83,14 +83,6 @@ def inference():
     job = q.enqueue(custom_function, "./src/image.png")
     return {"job_id": job.id}
 
-
-@app.get("/embed/{content}", status_code=200)
-async def embed(content: Annotated[str, Path()]):
-    job = q.enqueue(embed_video_description, content)
-
-    return {"job_id": job.id}
-
-
 @app.get("/inference/{job_id}", status_code=200)
 def get_result(job_id: str):
     try:

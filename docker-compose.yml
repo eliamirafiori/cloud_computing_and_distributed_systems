@@ -2,6 +2,9 @@ networks:
   my-network:
     driver: bridge
 
+# Define named volumes for persistent data storage
+volumes:
+  db_data:
 services:
   database:
     image: pgvector/pgvector:pg18-trixie
@@ -10,8 +13,11 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # use a named volume to persist the database data
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
+
+
     ports:
       - "5432:5432"
     networks:
@@ -108,19 +114,22 @@ services:
       timeout: 5s
       retries: 5
 
-#  k6:
-#    image: grafana/k6
-#    container_name: my_k6
-#    command: run /scripts/script.js
-#    volumes:
-#      - ./k6:/scripts
-#    networks:
-#      - my-network
-#    restart: no
-#    depends_on:
-#      redis:
-#        condition: service_started
-#      ollama:
-#        condition: service_started
-#      backend:
-#        condition: service_started # service_healthy
+  k6:
+    image: grafana/k6
+    container_name: my_k6
+    # Available scenarios: smoke, load, queue, search, stress
+    #   docker compose run --rm k6 run -e SCENARIO=load /scripts/script.js
+    #   docker compose run --rm k6 run -e SCENARIO=queue /scripts/script.js
+    #   docker compose run --rm k6 run -e SCENARIO=search /scripts/script.js
+    #   docker compose run --rm k6 run -e SCENARIO=stress /scripts/script.js
+    # command: run -e SCENARIO=smoke /scripts/script.js
+    volumes:
+      - ./k6:/scripts
+    networks:
+      - my-network
+    restart: "no"
+    depends_on:
+      backend:
+        condition: service_started
+
+

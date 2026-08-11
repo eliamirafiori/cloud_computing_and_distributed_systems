@@ -1,140 +1,237 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
+import { Rate, Trend } from "k6/metrics";
 
 /*
-export const options = {
-  scenarios: {
-    // 1. Smoke test — confirms basic correctness before anything heavier
-    smoke: {
-      executor: "constant-vus",
-      vus: 1,
-      duration: "30s",
-      exec: "hitInference",
-    },
+ * MiraFLIX load tests
+ * ===================
+ *
+ * Every heavy task (description embedding) is enqueued on the RQ queue
+ * "videos"; a pool of workers drains it. These scenarios exercise the full
+ * pipeline and, together with the queue backlog, show the distributed
+ * behaviour of the system.
+ *
+ * Run inside the compose network:
+ *   smoke   (default)  docker compose run --rm k6
+ *   load               docker compose run --rm k6 run -e SCENARIO=load /scripts/script.js
+ *   queue              docker compose run --rm k6 run -e SCENARIO=queue /scripts/script.js
+ *   search             docker compose run --rm k6 run -e SCENARIO=search /scripts/script.js
+ *   stress             docker compose run --rm k6 run -e SCENARIO=stress /scripts/script.js
+ *
+ * On k8s, point BASE_URL at the service/ingress:
+ *   docker run --rm -v ./k6:/scripts -e BASE_URL=http://miraflix:8000 grafana/k6 run /scripts/script.js
+ *
+ * Watch the queue backlog while a test is running:
+ *   docker compose exec -T redis redis-cli LLEN rq:queue:videos
+ *
+ * The "queue" scenario is the distributed-systems money shot: with N workers
+ * the same backlog drains N times faster. Compare worker=1 vs worker=4.
+ *
+ * NOTE: the upload endpoint does not return a job_id (yet), so the e2e flow
+ * polls GET /videos/{id} until the embedding is populated by a worker.
+ */
 
-    // 2. Load test — steady expected traffic, does it hold p95 targets?
-    load: {
-      executor: "constant-arrival-rate",
-      rate: 5,
-      timeUnit: "1s",
-      duration: "3m",
-      preAllocatedVUs: 50,
-      maxVUs: 200,
-      startTime: "35s",
-      exec: "hitInference",
-    },
+const BASE_URL = __ENV.BASE_URL || "http://backend:8000";
 
-    // 3. Breakpoint / stress test — ramp until it actually breaks
-    breakpoint: {
-      executor: "ramping-arrival-rate",
-      startRate: 1,
-      timeUnit: "1s",
-      preAllocatedVUs: 500,
-      maxVUs: 1000,
-      stages: [
-        { duration: "1m", target: 5 },
-        { duration: "1m", target: 15 },
-        { duration: "1m", target: 30 },
-        { duration: "1m", target: 60 },
-        { duration: "1m", target: 100 },
-      ],
-      startTime: "4m",
-      exec: "hitInference",
-    },
+// Tiny file on purpose: load tests upload hundreds of videos.
+// 9KB instead of the 26MB sample.mp4 -> no disk saturation during tests.
+const VIDEO_FILE = open("./assets/sample_small.mp4", "b");
 
-    // 4. Spike test — sudden burst, does it recover after?
-    spike: {
-      executor: "ramping-vus",
-      startVUs: 0,
-      stages: [
-        { duration: "10s", target: 5 },
-        { duration: "10s", target: 300 }, // sudden spike
-        { duration: "30s", target: 300 },
-        { duration: "10s", target: 5 }, // sudden drop — check recovery
-        { duration: "30s", target: 5 },
-      ],
-      startTime: "9m",
-      exec: "hitInference",
-    },
+const embedReady = new Rate("embedding_ready");   // embedding ready within the poll window
+const jobDuration = new Trend("job_duration_ms"); // upload -> embedding ready
 
-    // 5. Soak test — moderate load, long duration, catches leaks/degradation
-    // Run this one separately (`k6 run --tag testtype=soak`), it's long
-    soak: {
-      executor: "constant-vus",
-      vus: 20,
-      duration: "30m",
-      exec: "hitInference",
-      startTime: "0s", // run standalone, don't stack with the above
-    },
+const SCENARIOS = {
+  smoke: {
+    // End-to-end correctness: upload -> embedding -> streaming
+    executor: "constant-vus",
+    vus: 1,
+    duration: "30s",
+    exec: "e2eUpload",
+    tags: { test: "smoke" },
   },
-  // thresholds: {
-  //   http_req_duration: ["p(95)<2000"],
-  //   http_req_failed: ["rate<0.01"],
-  // },
+  load: {
+    // API throughput: uploads only, no polling. Worker drain is measured
+    // separately (queue backlog + queue scenario).
+    executor: "constant-arrival-rate",
+    rate: 5,
+    timeUnit: "1s",
+    duration: "1m",
+    preAllocatedVUs: 20,
+    maxVUs: 50,
+    exec: "uploadOnly",
+    tags: { test: "load" },
+  },
+  queue: {
+    // Pure enqueue rate on an EXISTING video (re-embed). No file upload,
+    // no polling: fast iterations, real rate. The drain is observed
+    // externally (LLEN rq:queue:videos) while workers process the backlog.
+    executor: "constant-arrival-rate",
+    rate: 5,
+    timeUnit: "1s",
+    duration: "1m",
+    preAllocatedVUs: 20,
+    maxVUs: 50,
+    exec: "enqueueReembed",
+    tags: { test: "queue" },
+  },
+  search: {
+    // Vector-search pipeline under realistic load.
+    // NB: with worker=1, embeddinggemma takes ~3s per job -> sustainable rate
+    // is ~0.3/s. Above that, jobs accumulate and the 30s poll times out:
+    // that is the backlog lesson, covered by the stress scenario.
+    executor: "constant-arrival-rate",
+    rate: 1,
+    timeUnit: "2s",
+    duration: "1m",
+    preAllocatedVUs: 10,
+    maxVUs: 20,
+    exec: "searchQuery",
+    tags: { test: "search" },
+  },
+  stress: {
+    // Ramp until the system breaks. No strict thresholds on purpose.
+    executor: "ramping-arrival-rate",
+    startRate: 1,
+    timeUnit: "1s",
+    preAllocatedVUs: 50,
+    maxVUs: 200,
+    stages: [
+      { duration: "30s", target: 2 },
+      { duration: "30s", target: 5 },
+      { duration: "30s", target: 10 },
+      { duration: "30s", target: 20 },
+    ],
+    exec: "e2eUpload",
+    tags: { test: "stress" },
+  },
 };
-*/
 
-/*
-SCENARIOS
-Upload dei video (saturazione banda di rete e trasferimento dati)
-Streaming dei video (saturazione della banda e probabili race conditions)
-Ricerca degli utenti (stress test di Ollama)
-*/
+// Run a single scenario with -e SCENARIO=load (runs all of them otherwise).
+const SELECTED = __ENV.SCENARIO;
 
 export const options = {
-  vus: 1000,
-  duration: '10s',
+  scenarios: SELECTED ? { [SELECTED]: SCENARIOS[SELECTED] } : SCENARIOS,
+  // Strict thresholds only on the correctness scenarios (smoke/load/search).
+  // queue and stress are exploratory: read the numbers, not the pass/fail.
+  thresholds: {
+    "http_req_failed{test:smoke}": ["rate<0.01"],
+    "checks{test:smoke}": ["rate>0.90"],
+    "embedding_ready{test:smoke}": ["rate>0.90"],
+    "http_req_failed{test:load}": ["rate<0.01"],
+    "checks{test:load}": ["rate>0.90"],
+    "http_req_failed{test:search}": ["rate<0.01"],
+    "checks{test:search}": ["rate>0.90"],
+  },
 };
 
-export default function hitInference() {
-  const enqueueRes = http.get("http://backend:8000/embed/ciao_mi_chiamo_elia");
-  check(enqueueRes, { "enqueued 200": (r) => r.status === 200 });
+// Video used by the "queue" scenario (re-embed). A smoke run creates it (id=1
+// on a fresh DB). If you already have data: -e SEED_VIDEO_ID=<id>
+const SEED_VIDEO_ID = __ENV.SEED_VIDEO_ID || "1";
 
-  const jobId = JSON.parse(enqueueRes.body).job_id;
+const POLL_ATTEMPTS = 30;
+const POLL_INTERVAL_S = 1;
 
-  let result;
-  const maxAttempts = 60; // tune to your expected inference latency
-  for (let i = 0; i < maxAttempts; i++) {
-    sleep(1);
-    const res = http.get(`http://backend:8000/inference/${jobId}`);
-    const body = JSON.parse(res.body);
+// Polls GET /videos/{id} until the worker populates the embedding.
+function pollEmbedding(videoId) {
+  const start = Date.now();
+  for (let i = 0; i < POLL_ATTEMPTS; i++) {
+    sleep(POLL_INTERVAL_S);
+    const res = http.get(`${BASE_URL}/videos/${videoId}`, {
+      tags: { name: "get_video" },
+    });
+    const emb = res.status === 200 ? res.json().embedding : null;
+    if (emb && emb.length > 0) {
+      jobDuration.add(Date.now() - start);
+      return true;
+    }
+  }
+  jobDuration.add(Date.now() - start);
+  return false;
+}
 
-    if (body.status === "finished" || body.status === "failed") {
-      result = body;
+function upload(description) {
+  return http.post(
+    `${BASE_URL}/uploads/video/`,
+    {
+      video_model: JSON.stringify({ description }),
+      file: http.file(VIDEO_FILE, "sample_small.mp4", "video/mp4"),
+    },
+    { tags: { name: "upload" } },
+  );
+}
+
+export function e2eUpload() {
+  // 1. Multipart upload -> 201 {id, video_url, streaming_url, ...}
+  const uploadRes = upload(`k6 e2e ${__VU}-${__ITER}`);
+  check(uploadRes, { "upload 201": (r) => r.status === 201 });
+
+  if (uploadRes.status !== 201) {
+    embedReady.add(false);
+    return;
+  }
+
+  const videoId = uploadRes.json().id;
+
+  // 2. Poll until a worker writes the embedding
+  const ok = pollEmbedding(videoId);
+  check(ok, { "embedding ready": (v) => v === true });
+  embedReady.add(ok);
+
+  // 3. Range request on the streaming endpoint (expected 206)
+  const rangeRes = http.get(`${BASE_URL}/streams/video/${videoId}`, {
+    headers: { Range: "bytes=0-1023" },
+    tags: { name: "stream_range" },
+  });
+  check(rangeRes, { "stream 206": (r) => r.status === 206 });
+}
+
+export function uploadOnly() {
+  // Upload without polling: measures API + DB + storage throughput.
+  const uploadRes = upload(`k6 load ${__VU}-${__ITER}`);
+  check(uploadRes, { "upload 201": (r) => r.status === 201 });
+
+  if (uploadRes.status === 201) {
+    const rangeRes = http.get(
+      `${BASE_URL}/streams/video/${uploadRes.json().id}`,
+      { headers: { Range: "bytes=0-1023" }, tags: { name: "stream_range" } },
+    );
+    check(rangeRes, { "stream 206": (r) => r.status === 206 });
+  }
+}
+
+export function enqueueReembed() {
+  // POST /embeddings/embed/{id}: enqueue a re-embed job for an existing video.
+  // No file, no DB row, no polling: pure pressure on the queue.
+  const res = http.post(
+    `${BASE_URL}/embeddings/embed/${SEED_VIDEO_ID}`,
+    null,
+    { tags: { name: "reembed" } },
+  );
+  check(res, { "reembed 202": (r) => r.status === 202 });
+}
+
+export function searchQuery() {
+  // POST /searches/search/ -> job_id, then poll until "done".
+  const res = http.post(
+    `${BASE_URL}/searches/search/`,
+    { query: `k6 search ${__VU}-${__ITER}` },
+    { tags: { name: "search" } },
+  );
+  check(res, { "search 202": (r) => r.status === 202 });
+  if (res.status !== 202) return;
+
+  const jobId = res.json().job_id;
+  let done = false;
+  for (let i = 0; i < POLL_ATTEMPTS; i++) {
+    sleep(POLL_INTERVAL_S);
+    const r = http.get(`${BASE_URL}/searches/search/${jobId}`, {
+      tags: { name: "search_poll" },
+    });
+    const body = r.json();
+    if (body.status === "done" || body.status === "failed") {
+      done = body.status === "done";
       break;
     }
   }
-
-  check(result, {
-    "job finished": (r) => r && r.status === "finished",
-  });
+  check(done, { "search done": (v) => v === true });
 }
-
-/*
-  TOTAL RESULTS 
-
-    checks_total.......: 9671   5.284696/s
-    checks_succeeded...: 53.60% 5184 out of 9671
-    checks_failed......: 46.39% 4487 out of 9671
-
-    ✓ enqueued 200
-    ✗ job finished
-      ↳  0% — ✓ 21 / ✗ 4487
-
-    HTTP
-    http_req_duration..............: avg=3.73ms min=703.84µs med=1.78ms max=135.07ms p(90)=7.58ms p(95)=14.47ms
-      { expected_response:true }...: avg=3.73ms min=703.84µs med=1.78ms max=135.07ms p(90)=7.58ms p(95)=14.47ms
-    http_req_failed................: 0.00%  0 out of 304074
-    http_reqs......................: 304074 166.16056/s
-
-    EXECUTION
-    dropped_iterations.............: 6293   3.438796/s
-    iteration_duration.............: avg=1m0s   min=22.05s   med=1m0s   max=1m0s     p(90)=1m0s   p(95)=1m0s   
-    iterations.....................: 4508   2.463387/s
-    vus............................: 16     min=16          max=1025
-    vus_max........................: 1320   min=820         max=1320
-
-    NETWORK
-    data_received..................: 59 MB  32 kB/s
-    data_sent......................: 35 MB  19 kB/s
-*/
