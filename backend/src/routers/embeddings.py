@@ -1,10 +1,10 @@
-from http.client import HTTPException
 from typing import Annotated
 
-from cloud_computing_and_distributed_systems.backend.src.models.video_model import Video
+from ..models.video_model import Video
 from fastapi import (
     APIRouter,
     Depends,
+    HTTPException,
     Path,
 )
 from redis import Redis
