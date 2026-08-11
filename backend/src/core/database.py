@@ -15,7 +15,6 @@ from ..commons.constants import (
 # needs Python package: pip install "psycopg[binary]"
 postgresql_url = f"postgresql+psycopg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
-connect_args = {"check_same_thread": False}
 engine = create_engine(
     postgresql_url,
     pool_pre_ping=True,  # Prevents the reuse of stale connections and avoids this exact error
