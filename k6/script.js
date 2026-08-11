@@ -74,6 +74,13 @@ export const options = {
 };
 */
 
+/*
+SCENARIOS
+Upload dei video (saturazione banda di rete e trasferimento dati)
+Streaming dei video (saturazione della banda e probabili race conditions)
+Ricerca degli utenti (stress test di Ollama)
+*/
+
 export const options = {
   vus: 1000,
   duration: '10s',

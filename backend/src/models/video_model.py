@@ -34,7 +34,7 @@ class VideoBase(SQLModel):
                     "video_url": "http://...",
                     "streaming_url": "http://...",
                     "description": "In this video...",
-                    "embedding": [1, 2, 3, ...],
+                    "embedding": [1, 2, 3],
                 }
             ]
         },
