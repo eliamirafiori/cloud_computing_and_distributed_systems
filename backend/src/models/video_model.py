@@ -55,7 +55,8 @@ class Video(VideoBase, table=True):
     """
 
     id: int | None = Field(default=None, primary_key=True, index=True)
-    created_at: datetime | None = Field(default=datetime.now(), index=True)
+    # The created_at field is automatically set to the current date and time when a new record is created.
+    created_at: datetime | None = Field(default_factory=datetime.now, index=True)
 
 
 class VideoCreate(VideoBase):
