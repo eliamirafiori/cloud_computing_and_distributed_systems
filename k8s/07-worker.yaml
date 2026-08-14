@@ -1,0 +1,47 @@
+# Worker RQ — stessa immagine del backend, command diverso
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: miraflix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/mattiasandrini/miraflix-backend:latest
+          imagePullPolicy: Always
+          command: ["rq", "worker", "--with-scheduler", "--url", "redis://redis:6379/0", "videos"]
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_SERVER
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_DB

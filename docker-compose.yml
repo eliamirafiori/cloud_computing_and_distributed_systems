@@ -137,7 +137,7 @@ services:
     container_name: my_prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
-      - --web.enable-remote-write-receiver   # ← indispensabile, senza: 404
+      - --web.enable-remote-write-receiver
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:

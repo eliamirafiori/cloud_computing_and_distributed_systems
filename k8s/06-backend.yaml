@@ -1,0 +1,95 @@
+# Backend FastAPI — PVC condiviso per upload (RWX, serve per HPA multi-replica in Fase 5)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: miraflix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/mattiasandrini/miraflix-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_SERVER
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: miraflix-secrets
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /health/
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: miraflix-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: miraflix-data
+  namespace: miraflix
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  # NOME OBBLIGATORIO: il worker chiama http://my_backend:8000 (hardcoded nel codice)
+  name: my_backend
+  namespace: miraflix
+spec:
+  type: NodePort
+  selector:
+    app: backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30080
