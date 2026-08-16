@@ -1,18 +1,17 @@
-# CUSTOM HPA for the worker: scales based on the RQ queue length.
+# Single HPA for the WORKER: scales on both CPU and RQ queue length.
 #
-# Unlike the CPU-based HPA (which reacts only when the worker is already
-# saturated), this one watches the "videos" queue in Redis: when too many
-# jobs are waiting, it adds workers immediately, before CPU saturates.
+# Kubernetes allows only ONE HPA per Deployment (two HPAs on the same target
+# cause "AmbiguousSelector"), so CPU and queue metrics are combined here.
+# The HPA computes replicas for each metric and uses the highest value.
 #
-# Metric: rq_queue_length (exposed by prometheus-adapter, which reads it
-# from redis-exporter via Prometheus).
-#
-# Logic: scale when (queued jobs) / (number of workers) > 5.
-# With 100 queued jobs and 1 worker -> 100/1 = 100 > 5 -> scale up to 8 workers.
+# Metric 1 (CPU): scale when average CPU usage > 70% of requests (250m).
+# Metric 2 (queue): scale when (queued jobs) / (number of workers) > 5.
+#   The metric comes from redis-exporter -> Prometheus -> prometheus-adapter
+#   (external metric "rq_queue_length").
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: worker-queue
+  name: worker-hpa
   namespace: miraflix
 spec:
   scaleTargetRef:
@@ -22,6 +21,12 @@ spec:
   minReplicas: 1
   maxReplicas: 8
   metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
     - type: External
       external:
         metric:

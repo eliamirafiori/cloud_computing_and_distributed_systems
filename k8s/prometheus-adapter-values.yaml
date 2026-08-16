@@ -4,10 +4,10 @@
 # through Prometheus) as the external metric "rq_queue_length", usable by HPAs.
 #
 # Chain: Redis -> redis-exporter (metric redis_key_size) -> Prometheus
-#        -> prometheus-adapter (here) -> HPA worker-queue
+#        -> prometheus-adapter (here) -> HPA worker-hpa
 #
-# NOTE: the chart expects "rules.custom" as a list, plus empty resource/external
-# sections. A bare "rules:" list breaks the resource-metrics template.
+# NOTE: the chart expects "rules.custom" / "rules.external" as lists, plus
+# empty resource sections. A bare "rules:" list breaks the resource template.
 #
 # NOTE: modern redis_exporter (v1.89+) names the check-key metric
 # redis_key_size (NOT redis_key_llen).
@@ -17,15 +17,24 @@
 prometheus:
   url: http://kube-prometheus-stack-prometheus.monitoring.svc
   port: 9090
+
 rules:
   default: false
-  custom:
-    # Source series: the redis-exporter metric for the queue key
-    - seriesQuery: 'redis_key_size{key="rq:queue:videos"}'
-      name:
-        # renamed to a readable metric name for the HPA
-        as: rq_queue_length
-      # sum across series (only one exists, but keeps it robust)
-      metricsQuery: 'sum(redis_key_size{key="rq:queue:videos"})'
+  custom: []
   resource: {}
-  external: []
+  # External metric: putting the rule here (instead of rules.custom) is what
+  # makes the chart create the external.metrics.k8s.io APIService and exposes
+  # the metric for HPA type: External.
+  external:
+    - seriesQuery: 'redis_key_size{key="rq:queue:videos"}'
+      resources:
+        # Required: without resource overrides the adapter fails with
+        # "unable to convert resource namespaces into label".
+        overrides:
+          namespace:
+            resource: namespace
+          pod:
+            resource: pod
+      name:
+        as: rq_queue_length
+      metricsQuery: 'sum(redis_key_size{key="rq:queue:videos"})'
