@@ -11,6 +11,12 @@
 #
 # NOTE: modern redis_exporter (v1.89+) names the check-key metric
 # redis_key_size (NOT redis_key_llen).
+#
+# Prometheus endpoint: MUST point at the kube-prometheus-stack Prometheus
+# service (default in the chart is prometheus.default.svc which does not exist).
+prometheus:
+  url: http://kube-prometheus-stack-prometheus.monitoring.svc
+  port: 9090
 rules:
   default: false
   custom:
