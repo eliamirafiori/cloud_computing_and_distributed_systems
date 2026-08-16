@@ -5,11 +5,18 @@
 #
 # Chain: Redis -> redis-exporter (metric redis_key_llen) -> Prometheus
 #        -> prometheus-adapter (here) -> HPA worker-queue
+#
+# NOTE: the chart expects "rules.custom" as a list, plus empty resource/external
+# sections. A bare "rules:" list breaks the resource-metrics template.
 rules:
-  # Source series: the redis-exporter metric for the queue key
-  - seriesQuery: 'redis_key_llen{key="rq:queue:videos"}'
-    name:
-      # renamed to a readable metric name for the HPA
-      as: 'rq_queue_length'
-    # sum across series (only one exists, but keeps it robust)
-    metricsQuery: 'sum(redis_key_llen{key="rq:queue:videos"})'
+  default: false
+  custom:
+    # Source series: the redis-exporter metric for the queue key
+    - seriesQuery: 'redis_key_llen{key="rq:queue:videos"}'
+      name:
+        # renamed to a readable metric name for the HPA
+        as: rq_queue_length
+      # sum across series (only one exists, but keeps it robust)
+      metricsQuery: 'sum(redis_key_llen{key="rq:queue:videos"})'
+  resource: {}
+  external: []
