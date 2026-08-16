@@ -1,7 +1,8 @@
 # redis-exporter: exposes Redis metrics to Prometheus, including the RQ queue
 # length ("videos") via --check-keys.
 #
-# Produced metric: redis_key_llen{key="rq:queue:videos"} = number of queued jobs.
+# Produced metric: redis_key_size{key="rq:queue:videos"} = number of queued jobs
+# (modern redis_exporter v1.89+ names it redis_key_size, not redis_key_llen).
 apiVersion: apps/v1
 kind: Deployment
 metadata:
