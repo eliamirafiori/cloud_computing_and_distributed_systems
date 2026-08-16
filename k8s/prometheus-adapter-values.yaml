@@ -1,0 +1,15 @@
+# Values for prometheus-adapter (installed via helm in the monitoring namespace).
+#
+# WHAT IT DOES: exposes the RQ "videos" queue length (read by redis-exporter
+# through Prometheus) as the external metric "rq_queue_length", usable by HPAs.
+#
+# Chain: Redis -> redis-exporter (metric redis_key_llen) -> Prometheus
+#        -> prometheus-adapter (here) -> HPA worker-queue
+rules:
+  # Source series: the redis-exporter metric for the queue key
+  - seriesQuery: 'redis_key_llen{key="rq:queue:videos"}'
+    name:
+      # renamed to a readable metric name for the HPA
+      as: 'rq_queue_length'
+    # sum across series (only one exists, but keeps it robust)
+    metricsQuery: 'sum(redis_key_llen{key="rq:queue:videos"})'

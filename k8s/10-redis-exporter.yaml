@@ -1,0 +1,62 @@
+# redis-exporter: exposes Redis metrics to Prometheus, including the RQ queue
+# length ("videos") via --check-keys.
+#
+# Produced metric: redis_key_llen{key="rq:queue:videos"} = number of queued jobs.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-exporter
+  namespace: miraflix
+  labels:
+    app: redis-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-exporter
+  template:
+    metadata:
+      labels:
+        app: redis-exporter
+    spec:
+      containers:
+        - name: redis-exporter
+          image: oliver006/redis_exporter:latest
+          args:
+            - --redis.addr=redis://redis:6379
+            - --check-keys=rq:queue:videos
+          ports:
+            - containerPort: 9121
+              name: metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-exporter
+  namespace: miraflix
+  labels:
+    app: redis-exporter
+spec:
+  selector:
+    app: redis-exporter
+  ports:
+    - port: 9121
+      targetPort: 9121
+      name: metrics
+---
+# ServiceMonitor: tells Prometheus (kube-prometheus-stack) to scrape this
+# service every 30 seconds. Without it Prometheus would not know the pod exists.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-exporter
+  namespace: miraflix
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: redis-exporter
+  endpoints:
+    - port: metrics
+      interval: 30s

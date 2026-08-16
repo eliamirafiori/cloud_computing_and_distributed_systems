@@ -1,0 +1,31 @@
+# CUSTOM HPA for the worker: scales based on the RQ queue length.
+#
+# Unlike the CPU-based HPA (which reacts only when the worker is already
+# saturated), this one watches the "videos" queue in Redis: when too many
+# jobs are waiting, it adds workers immediately, before CPU saturates.
+#
+# Metric: rq_queue_length (exposed by prometheus-adapter, which reads it
+# from redis-exporter via Prometheus).
+#
+# Logic: scale when (queued jobs) / (number of workers) > 5.
+# With 100 queued jobs and 1 worker -> 100/1 = 100 > 5 -> scale up to 8 workers.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: worker-queue
+  namespace: miraflix
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: worker
+  minReplicas: 1
+  maxReplicas: 8
+  metrics:
+    - type: External
+      external:
+        metric:
+          name: rq_queue_length
+        target:
+          type: AverageValue
+          averageValue: 5
