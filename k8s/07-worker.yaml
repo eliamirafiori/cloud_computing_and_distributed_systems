@@ -19,6 +19,15 @@ spec:
           image: ghcr.io/mattiasandrini/miraflix-backend:latest
           imagePullPolicy: Always
           command: ["rq", "worker", "--with-scheduler", "--url", "redis://redis:6379/0", "videos"]
+          # RISORSE: identiche al backend — necessarie per l'HPA su CPU.
+          # Il worker è CPU-bound (fa le embedding), quindi ha lo stesso profilo.
+          resources:
+            requests:
+              cpu: 250m        # richiesta: 0.25 CPU (base per il calcolo HPA)
+              memory: 256Mi    # richiesta: 256 MB di RAM
+            limits:
+              cpu: "1"         # tetto: massimo 1 CPU
+              memory: 1Gi      # tetto: massimo 1 GB
           env:
             - name: POSTGRES_USER
               valueFrom:

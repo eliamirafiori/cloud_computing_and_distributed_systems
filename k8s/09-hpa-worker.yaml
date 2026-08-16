@@ -1,0 +1,27 @@
+# HPA (Horizontal Pod Autoscaler) del WORKER
+#
+# COSA FA: scala automaticamente il numero di worker RQ in base alla CPU.
+# Il worker fa le embedding (lavoro pesante con ollama, ~1 job/4.5s per worker).
+# Nel test di carico, 1 solo worker creava un backlog di ~27 minuti.
+#
+# Con questo HPA: sotto carico, Kubernetes aggiunge worker (fino a 8) per
+# smaltire la coda più velocemente; a riposo, torna a 1.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: worker-cpu
+  namespace: miraflix
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: worker
+  minReplicas: 1       # mai meno di 1 worker
+  maxReplicas: 8       # fino a 8 worker in parallelo sotto carico
+  metrics:
+    - type: Resource   # metrica di tipo "risorsa": CPU o memoria
+      resource:
+        name: cpu
+        target:
+          type: Utilization        # percentuale rispetto ai requests dichiarati
+          averageUtilization: 70   # soglia: scala sopra il 70% di utilizzo

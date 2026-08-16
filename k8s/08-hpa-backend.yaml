@@ -1,0 +1,27 @@
+# HPA (Horizontal Pod Autoscaler) del BACKEND
+#
+# COSA FA: scala automaticamente il numero di pod del backend in base alla CPU.
+# Se la CPU media dei pod supera il 60% della richiesta (250m), Kubernetes
+# aggiunge pod (fino a maxReplicas). Quando scende, li rimuove (fino a minReplicas).
+#
+# Perché serve: nello stress test il backend moriva a ~5 upload/s.
+# Con l'HPA, invece di crashare, aggiunge repliche e distribuisce il carico.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-cpu
+  namespace: miraflix
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 1       # mai meno di 1 pod (il servizio deve restare su)
+  maxReplicas: 4       # mai più di 4 pod (limite per non saturare il cluster)
+  metrics:
+    - type: Resource   # metrica di tipo "risorsa": CPU o memoria
+      resource:
+        name: cpu
+        target:
+          type: Utilization        # percentuale rispetto ai requests dichiarati
+          averageUtilization: 60   # soglia: scala sopra il 60% di utilizzo

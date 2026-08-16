@@ -37,7 +37,8 @@ spec:
                   key: POSTGRES_PASSWORD
           volumeMounts:
             - name: data
-              # path corretto per pgvector (il compose usa /var/lib/mysql: bug)
+              # path corretto per pgvector 18+: montare il PARENT (/var/lib/postgresql),
+              # non /var/lib/postgresql/data (l'immagine 18+ crea la sottodirectory con la versione)
               mountPath: /var/lib/postgresql
           readinessProbe:
             exec:
