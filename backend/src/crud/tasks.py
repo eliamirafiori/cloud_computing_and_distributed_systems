@@ -41,7 +41,7 @@ def custom_function(image_path):
     return response.message.content
 
 
-BACKEND_URL = "http://my_backend:8000"  # service name from docker-compose
+BACKEND_URL = "http://my-backend:8000"  # service name from docker-compose
 
 
 def embed_video_description(video_id: int, description: str):

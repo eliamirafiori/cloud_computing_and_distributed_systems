@@ -38,7 +38,7 @@ spec:
           volumeMounts:
             - name: data
               # path corretto per pgvector (il compose usa /var/lib/mysql: bug)
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "$(POSTGRES_USER)", "-d", "$(POSTGRES_DB)"]

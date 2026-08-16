@@ -82,8 +82,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # NOME OBBLIGATORIO: il worker chiama http://my_backend:8000 (hardcoded nel codice)
-  name: my_backend
+  # NOME OBBLIGATORIO: il worker chiama http://my-backend:8000 (hardcoded nel codice)
+  name: my-backend
   namespace: miraflix
 spec:
   type: NodePort
