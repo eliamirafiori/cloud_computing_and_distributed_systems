@@ -1,0 +1,18 @@
+# Kustomize: generates the k6-scripts ConfigMap from the repo files
+# (script + upload asset) — no manual `kubectl create configmap` needed.
+#
+# Usage (from the repo root):
+#   kubectl apply -k .
+#   # or, to preview:
+#   kubectl kustomize .
+#
+# disableNameSuffixHash: keeps the name "k6-scripts" (the Job manifest and
+# run-k6.sh reference it by name; a hash suffix would break the reference).
+configMapGenerator:
+  - name: k6-scripts
+    namespace: miraflix
+    files:
+      - script.js=k6/script.js
+      - sample_small.mp4=k6/assets/sample_small.mp4
+    options:
+      disableNameSuffixHash: true
