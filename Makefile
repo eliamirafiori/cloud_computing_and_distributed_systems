@@ -107,6 +107,9 @@ search: ## vector search e2e (flushes the queue first)
 	@sleep 5
 	$(K6_RUN) -e SCENARIO=search /scripts/script.js
 
+stream: ## range requests like a real player (206 checks), 10/s for 1m
+	$(K6_RUN) -e SCENARIO=stream /scripts/script.js
+
 stress: ## ramp 1->20/s for 2m, find the breaking point
 	$(COMPOSE) exec -T redis redis-cli DEL rq:queue:videos >/dev/null 2>&1 || true
 	@sleep 4
