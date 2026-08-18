@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 import httpx
 
 from ollama import Client
@@ -41,7 +42,7 @@ def custom_function(image_path):
     return response.message.content
 
 
-BACKEND_URL = "http://my_backend:8000"  # service name from docker-compose
+BACKEND_URL = os.getenv("BACKEND_URL", "http://my_backend:8000")  # docker default; k8s overrides via env
 
 
 def embed_video_description(video_id: int, description: str):
