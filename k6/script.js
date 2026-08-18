@@ -88,6 +88,22 @@ const SCENARIOS = {
     exec: "searchQuery",
     tags: { test: "search" },
   },
+  stream: {
+    // Video streaming like a real player: range requests on an EXISTING
+    // video (created by the smoke run, id=1). The player opens the stream,
+    // then jumps around the file (start / middle / end) — every request
+    // returns 206 Partial Content. This exercises the static file serving
+    // path under concurrent users (the core MiraFLIX feature).
+    // Requires a video on disk: run smoke first, or pass -e SEED_VIDEO_ID.
+    executor: "constant-arrival-rate",
+    rate: 10,
+    timeUnit: "1s",
+    duration: "1m",
+    preAllocatedVUs: 20,
+    maxVUs: 50,
+    exec: "streamVideo",
+    tags: { test: "stream" },
+  },
   stress: {
     // Ramp until the system breaks. No strict thresholds on purpose.
     executor: "ramping-arrival-rate",
@@ -121,6 +137,8 @@ export const options = {
     "checks{test:load}": ["rate>0.90"],
     "http_req_failed{test:search}": ["rate<0.01"],
     "checks{test:search}": ["rate>0.90"],
+    "http_req_failed{test:stream}": ["rate<0.01"],
+    "checks{test:stream}": ["rate>0.90"],
   },
 };
 
@@ -234,4 +252,24 @@ export function searchQuery() {
     }
   }
   check(done, { "search done": (v) => v === true });
+}
+export function streamVideo() {
+  // Simulates a video player: one range request per iteration, alternating
+  // between the start, the middle and the end of the file.
+  // The server must answer 206 Partial Content for every range.
+  const pos = __ITER % 3;
+  let range;
+  if (pos === 0) {
+    range = "bytes=0-1023";            // player opens the stream
+  } else if (pos === 1) {
+    range = "bytes=4096-5119";         // player seeks into the file
+  } else {
+    range = "bytes=-512";              // player reads the end (duration lookup)
+  }
+
+  const res = http.get(`${BASE_URL}/streams/video/${SEED_VIDEO_ID}`, {
+    headers: { Range: range },
+    tags: { name: "stream_range" },
+  });
+  check(res, { "stream 206": (r) => r.status === 206 });
 }
