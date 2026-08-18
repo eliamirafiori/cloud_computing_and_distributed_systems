@@ -2240,18 +2240,12 @@
       {
         "name": "DS_PROMETHEUS",
         "type": "datasource",
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
         "query": "prometheus",
-        "current": {
-          "text": "Prometheus",
-          "value": "prometheus"
-        },
+        "current": {},
         "refresh": 1,
         "hide": 0,
-        "description": "Prometheus datasource (resolved by name: works in k8s and docker)"
+        "description": "Prometheus datasource (resolved by name: works in k8s and docker)",
+        "regex": ""
       },
       {
         "name": "test",
