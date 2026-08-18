@@ -54,3 +54,6 @@ spec:
                 secretKeyRef:
                   name: miraflix-secrets
                   key: POSTGRES_DB
+            # BACKEND_URL: k8s overrides the docker default in tasks.py
+            - name: BACKEND_URL
+              value: "http://my-backend:8000"
