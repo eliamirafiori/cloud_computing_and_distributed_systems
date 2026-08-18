@@ -2256,6 +2256,41 @@
           "text": "All",
           "value": "$__all"
         }
+      },
+      {
+        "name": "quantile_stat",
+        "type": "custom",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "options": [
+          {
+            "text": "p50",
+            "value": "p50"
+          },
+          {
+            "text": "p90",
+            "value": "p90"
+          },
+          {
+            "text": "p95",
+            "value": "p95"
+          },
+          {
+            "text": "p99",
+            "value": "p99"
+          }
+        ],
+        "current": {
+          "text": "p95",
+          "value": "p95"
+        },
+        "query": "p50,p90,p95,p99",
+        "refresh": 1,
+        "includeAll": false,
+        "multi": false,
+        "description": "Quantile statistic used by latency panels"
       }
     ]
   },
