@@ -64,7 +64,7 @@
       }
     ]
   },
-  "description": "Visualize k6 OSS results stored in Prometheus",
+  "description": "k6 load-test dashboard with MiraFLIX infra panels (RQ queue, HPA replicas, pod CPU).",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 19665,
@@ -87,9 +87,264 @@
   "liveNow": false,
   "panels": [
     {
+      "id": 2000,
+      "title": "RQ Queue Length (videos)",
+      "type": "timeseries",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "redis_key_size{key=\"rq:queue:videos\"}",
+          "legendFormat": "coda",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "description": "Number of jobs waiting in the RQ 'videos' queue. This is the metric that drives the custom HPA (worker-hpa): scale when (jobs)/(workers) > 5."
+    },
+    {
+      "id": 2001,
+      "title": "Worker replicas (HPA)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 4
+              },
+              {
+                "color": "red",
+                "value": 7
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
+          "legendFormat": "worker",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "description": "Current worker replicas. Should scale 1\u21928 when the RQ queue grows (custom HPA)."
+    },
+    {
+      "id": 2002,
+      "title": "Backend replicas (HPA)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "kube_deployment_status_replicas{deployment=\"backend\", namespace=\"miraflix\"}",
+          "legendFormat": "backend",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "description": "Current backend replicas (CPU HPA)."
+    },
+    {
+      "id": 2003,
+      "title": "MiraFLIX pod CPU",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"miraflix\"}[1m]))",
+          "legendFormat": "{{pod}}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "description": "CPU usage of every MiraFLIX pod (workers included)."
+    },
+    {
+      "id": 2004,
+      "title": "RQ Queue vs Worker replicas (the autoscaling story)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "workers"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "scale",
+                "properties": {
+                  "scale": 1
+                }
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "redis_key_size{key=\"rq:queue:videos\"}",
+          "legendFormat": "queue jobs",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
+          "legendFormat": "workers",
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ],
+      "description": "THE course screenshot: queue grows \u2192 workers scale up \u2192 queue drains \u2192 workers scale down."
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -255,7 +510,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 10,
+      "id": 2005,
       "options": {
         "legend": {
           "calcs": [],
@@ -272,10 +527,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(k6_vus{testid=~\"$testid\"})",
+          "expr": "sum(k6_vus{test=~\"$test\"})",
           "instant": false,
           "legendFormat": "vus",
           "range": true,
@@ -284,10 +539,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_duration_$quantile_stat",
@@ -297,10 +552,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_s",
@@ -310,10 +565,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(round(k6_http_req_failed_rate{testid=~\"$testid\"}, 0.1)*100)",
+          "expr": "avg(round(k6_http_req_failed_rate{test=~\"$test\"}, 0.1)*100)",
           "hide": true,
           "instant": false,
           "legendFormat": "http_req_failed",
@@ -323,10 +578,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\", expected_response=\"false\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\", expected_response=\"false\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_s_errors",
@@ -345,7 +600,7 @@
         "x": 0,
         "y": 11
       },
-      "id": 1,
+      "id": 2006,
       "panels": [],
       "title": "Performance Overview",
       "type": "row"
@@ -353,7 +608,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -380,7 +635,7 @@
         "x": 0,
         "y": 12
       },
-      "id": 4,
+      "id": 2007,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -399,10 +654,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(k6_http_reqs_total{testid=~\"$testid\"})",
+          "expr": "sum(k6_http_reqs_total{test=~\"$test\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -415,7 +670,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -443,7 +698,7 @@
         "x": 6,
         "y": 12
       },
-      "id": 22,
+      "id": 2008,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -462,10 +717,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(k6_http_reqs_total{testid=~\"$testid\", expected_response=\"false\"})",
+          "expr": "sum(k6_http_reqs_total{test=~\"$test\", expected_response=\"false\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -478,7 +733,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -505,7 +760,7 @@
         "x": 12,
         "y": 12
       },
-      "id": 20,
+      "id": 2009,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -524,10 +779,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\"}[$__rate_interval]))",
           "instant": false,
           "interval": "",
           "legendFormat": "__auto",
@@ -547,7 +802,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "Select a different Stat to change the query",
       "fieldConfig": {
@@ -575,7 +830,7 @@
         "x": 18,
         "y": 12
       },
-      "id": 21,
+      "id": 2010,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -594,10 +849,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -610,7 +865,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -669,7 +924,7 @@
         "x": 0,
         "y": 15
       },
-      "id": 8,
+      "id": 2011,
       "options": {
         "legend": {
           "calcs": [],
@@ -686,10 +941,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(irate(k6_data_sent_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "avg(irate(k6_data_sent_total{test=~\"$test\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "data_sent",
           "range": true,
@@ -698,11 +953,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg(irate(k6_data_received_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "avg(irate(k6_data_received_total{test=~\"$test\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "data_received",
@@ -716,7 +971,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -788,7 +1043,7 @@
         "x": 12,
         "y": 15
       },
-      "id": 9,
+      "id": 2012,
       "options": {
         "legend": {
           "calcs": [],
@@ -805,10 +1060,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_iteration_duration_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_iteration_duration_$quantile_stat{test=~\"$test\"})",
           "instant": false,
           "legendFormat": "iteration_duration_$quantile_stat",
           "range": true,
@@ -817,11 +1072,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg(k6_dropped_iterations_total{testid=~\"$testid\"})",
+          "expr": "avg(k6_dropped_iterations_total{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "dropped_iterations",
@@ -840,7 +1095,7 @@
         "x": 0,
         "y": 23
       },
-      "id": 16,
+      "id": 2013,
       "panels": [],
       "title": "HTTP",
       "type": "row"
@@ -848,7 +1103,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "Select a different Stat to change the query\n\n<a href=\"https://k6.io/docs/using-k6/metrics/reference/#http\" target=\"_blank\">HTTP-specific built-in metrics</a>",
       "fieldConfig": {
@@ -923,7 +1178,7 @@
         "x": 0,
         "y": 24
       },
-      "id": 14,
+      "id": 2014,
       "options": {
         "legend": {
           "calcs": [],
@@ -940,10 +1195,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_blocked_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_blocked_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_blocked_$quantile_stat",
@@ -953,10 +1208,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_tls_handshaking_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_tls_handshaking_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_tls_handshaking_$quantile_stat",
@@ -966,10 +1221,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_sending_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_sending_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_sending_$quantile_stat",
@@ -979,10 +1234,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_waiting_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_waiting_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_waiting_$quantile_stat",
@@ -992,10 +1247,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_receiving_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_receiving_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_receiving_$quantile_stat",
@@ -1005,10 +1260,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_duration_$quantile_stat",
@@ -1022,7 +1277,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "Select a different Stat to change the query",
       "fieldConfig": {
@@ -1143,7 +1398,7 @@
         "x": 8,
         "y": 24
       },
-      "id": 15,
+      "id": 2015,
       "options": {
         "legend": {
           "calcs": [],
@@ -1160,10 +1415,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_duration_$quantile_stat",
@@ -1173,10 +1428,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\", expected_response=\"true\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\", expected_response=\"true\"})",
           "instant": false,
           "legendFormat": "success_http_req_duration_$quantile_stat",
           "range": true,
@@ -1185,10 +1440,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(k6_http_req_duration_$quantile_stat{testid=~\"$testid\", expected_response=\"false\"})",
+          "expr": "avg(k6_http_req_duration_$quantile_stat{test=~\"$test\", expected_response=\"false\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "errors_http_req_duration_$quantile_stat",
@@ -1202,7 +1457,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "",
       "fieldConfig": {
@@ -1338,7 +1593,7 @@
         "x": 16,
         "y": 24
       },
-      "id": 18,
+      "id": 2016,
       "options": {
         "legend": {
           "calcs": [],
@@ -1355,10 +1610,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\"}[$__rate_interval]))",
           "instant": false,
           "legendFormat": "http_req_s",
           "range": true,
@@ -1367,10 +1622,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\", expected_response=\"false\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\", expected_response=\"false\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_s_errors",
@@ -1380,10 +1635,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(irate(k6_http_reqs_total{testid=~\"$testid\", expected_response=\"true\"}[$__rate_interval]))",
+          "expr": "sum(irate(k6_http_reqs_total{test=~\"$test\", expected_response=\"true\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "http_req_s_success",
@@ -1397,7 +1652,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "min/max/p95/p99 depends on the available Quantile Stats",
       "fieldConfig": {
@@ -1515,7 +1770,7 @@
         "x": 0,
         "y": 32
       },
-      "id": 17,
+      "id": 2017,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -1534,10 +1789,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by(name, method, status) (k6_http_req_duration_min{testid=~\"$testid\"})",
+          "expr": "avg by(name, method, status) (k6_http_req_duration_min{test=~\"$test\"})",
           "format": "table",
           "hide": false,
           "instant": false,
@@ -1548,10 +1803,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by(name, method, status) (k6_http_req_duration_max{testid=~\"$testid\"})",
+          "expr": "avg by(name, method, status) (k6_http_req_duration_max{test=~\"$test\"})",
           "format": "table",
           "hide": false,
           "instant": false,
@@ -1562,10 +1817,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by(name, method, status) (k6_http_req_duration_p95{testid=~\"$testid\"})",
+          "expr": "avg by(name, method, status) (k6_http_req_duration_p95{test=~\"$test\"})",
           "format": "table",
           "hide": false,
           "instant": false,
@@ -1576,10 +1831,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by(name, method, status) (k6_http_req_duration_p99{testid=~\"$testid\"})",
+          "expr": "avg by(name, method, status) (k6_http_req_duration_p99{test=~\"$test\"})",
           "format": "table",
           "hide": false,
           "instant": false,
@@ -1676,7 +1931,7 @@
         "x": 0,
         "y": 39
       },
-      "id": 11,
+      "id": 2018,
       "panels": [],
       "title": "Checks",
       "type": "row"
@@ -1684,7 +1939,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1757,7 +2012,7 @@
         "x": 0,
         "y": 40
       },
-      "id": 12,
+      "id": 2019,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -1782,11 +2037,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "round(k6_checks_rate{testid=~\"$testid\"}, 0.1)",
+          "expr": "round(k6_checks_rate{test=~\"$test\"}, 0.1)",
           "format": "table",
           "instant": false,
           "legendFormat": "__auto",
@@ -1859,7 +2114,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "description": "Filter by check name to query a particular check",
       "fieldConfig": {
@@ -1920,7 +2175,7 @@
         "x": 12,
         "y": 40
       },
-      "id": 13,
+      "id": 2020,
       "options": {
         "legend": {
           "calcs": [],
@@ -1937,10 +2192,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(round(k6_checks_rate{testid=~\"$testid\"}, 0.1)*100)",
+          "expr": "avg(round(k6_checks_rate{test=~\"$test\"}, 0.1)*100)",
           "instant": false,
           "legendFormat": "k6_checks_rate",
           "range": true,
@@ -1953,7 +2208,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 5,
@@ -1961,7 +2216,7 @@
         "x": 0,
         "y": 48
       },
-      "id": 23,
+      "id": 2021,
       "options": {
         "code": {
           "language": "plaintext",
@@ -1983,85 +2238,24 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "prometheus",
-          "value": "${DS_PROMETHEUS}"
+        "name": "test",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
         },
-        "description": "Choose a Prometheus Data Source",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Prometheus DS",
-        "multi": false,
-        "name": "DS_PROMETHEUS",
-        "options": [],
-        "query": "prometheus",
-        "queryValue": "",
+        "query": {
+          "query": "label_values(k6_http_reqs_total, test)",
+          "refId": "A"
+        },
         "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "type": "datasource"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "definition": "label_values(testid)",
-        "description": "Filter by \"testid\" tag. Define it by tagging: k6 run --tag testid=xyz",
-        "hide": 0,
         "includeAll": true,
-        "label": "Test ID",
+        "allValue": ".*",
         "multi": true,
-        "name": "testid",
-        "options": [],
-        "query": {
-          "query": "label_values(testid)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "definition": "metrics(k6_http_req_duration_)",
-        "description": "Statistic for Trend Metrics Queries. The available options depend on the values of the K6_PROMETHEUS_RW_TREND_STATS setting.",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Trend Metrics Query",
-        "multi": false,
-        "name": "quantile_stat",
-        "options": [],
-        "query": {
-          "query": "metrics(k6_http_req_duration_)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 2,
-        "regex": "/http_req_duration_(min|max|count|sum|avg|med|p[0-9]+)/g",
-        "skipUrlSync": false,
-        "sort": 2,
-        "type": "query"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "description": "Adhoc filters are applied to all panels. To enable it, go to Dashboard Settings / Variables / adhoc_filter and select the target Prometheus data source.",
-        "filters": [],
-        "hide": 0,
-        "label": "AdhocFilter",
-        "name": "adhoc_filter",
-        "skipUrlSync": false,
-        "type": "adhoc"
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
       }
     ]
   },
@@ -2072,7 +2266,7 @@
   "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "",
-  "title": "k6 Prometheus",
+  "title": "k6 Prometheus + MiraFLIX",
   "uid": "ccbb2351-2ae2-462f-ae0e-f2c893ad1028",
   "version": 3,
   "weekStart": ""

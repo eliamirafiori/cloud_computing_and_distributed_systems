@@ -1,0 +1,49 @@
+# k6 load-test Job: runs a k6 scenario inside the cluster.
+#
+# The script (k6/script.js) is mounted from the ConfigMap "k6-scripts",
+# created separately from the repo file:
+#   kubectl create configmap k6-scripts --from-file=script.js=../k6/script.js -n miraflix
+#
+# Metrics go to the in-cluster Prometheus via remote write.
+# Change SCENARIO to run: smoke, load, queue, search, stress.
+# The k6 "-e KEY=VALUE" flags are what k6 reads via __ENV (not shell vars).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-run
+  namespace: miraflix
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: k6
+          image: grafana/k6:latest
+          command: ["k6", "run", "-o", "experimental-prometheus-rw", "/scripts/script.js"]
+          env:
+            - name: SCENARIO
+              value: "smoke"
+            - name: BASE_URL
+              # Service name is my-backend (RFC 1123), not backend.
+              value: "http://my-backend:8000"
+            - name: K6_PROMETHEUS_RW_SERVER_URL
+              value: "http://kube-prometheus-stack-prometheus.monitoring.svc:9090/api/v1/write"
+            - name: K6_PROMETHEUS_RW_TREND_STATS
+              value: "p(95),p(99)"
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+      volumes:
+        - name: scripts
+          configMap:
+            name: k6-scripts
+            # Map flat configmap keys to the paths the script expects:
+            # /scripts/script.js and /scripts/assets/sample_small.mp4
+            # (configmap keys cannot contain "/", hence the items mapping).
+            items:
+              - key: script.js
+                path: script.js
+              - key: sample_small.mp4
+                path: assets/sample_small.mp4

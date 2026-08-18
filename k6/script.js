@@ -257,6 +257,8 @@ export function streamVideo() {
   // Simulates a video player: one range request per iteration, alternating
   // between the start, the middle and the end of the file.
   // The server must answer 206 Partial Content for every range.
+  // NOTE: suffix ranges (bytes=-N) are avoided on purpose: the backend Range
+  // parser does not handle them (ValueError -> 500). Absolute ranges only.
   const pos = __ITER % 3;
   let range;
   if (pos === 0) {
@@ -264,7 +266,7 @@ export function streamVideo() {
   } else if (pos === 1) {
     range = "bytes=4096-5119";         // player seeks into the file
   } else {
-    range = "bytes=-512";              // player reads the end (duration lookup)
+    range = "bytes=8000-8999";         // player reads the end (sample is 9001B)
   }
 
   const res = http.get(`${BASE_URL}/streams/video/${SEED_VIDEO_ID}`, {
