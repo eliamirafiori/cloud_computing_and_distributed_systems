@@ -1,0 +1,18 @@
+# Values for nfs-subdir-external-provisioner (installed via helm in the
+# nfs-provisioner namespace). All storage configuration lives in this file,
+# versioned in the repo (GitOps):
+#
+#   helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+#     --namespace nfs-provisioner --create-namespace \
+#     --values k8s/nfs-provisioner-values.yaml
+#
+nfs:
+  # NFS server VM (203) and the shared directory that holds all volumes
+  server: 192.168.1.153
+  path: /srv/nfs/k8s
+
+storageClass:
+  # Name of the StorageClass created by the provisioner
+  name: nfs
+  # Make it the cluster default: PVCs without a class land on NFS
+  defaultClass: true

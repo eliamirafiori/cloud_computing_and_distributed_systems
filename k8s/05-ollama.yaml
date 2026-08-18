@@ -1,4 +1,6 @@
-# Ollama — modelli su NFS, CPU only (niente GPU sulle VM)
+# Ollama — models on NFS, CPU only (no GPU on the VMs).
+# The embedding model is pulled automatically at startup by the initContainer,
+# so a fresh cluster works without manual `ollama pull` (saved on the NFS PVC).
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +16,17 @@ spec:
       labels:
         app: ollama
     spec:
+      initContainers:
+        - name: pull-model
+          image: ollama/ollama:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              ollama pull embeddinggemma
+          volumeMounts:
+            - name: models
+              mountPath: /root/.ollama
       containers:
         - name: ollama
           image: ollama/ollama:latest
@@ -48,7 +61,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # NOME OBBLIGATORIO: il codice usa Client(host="http://ollama:11434") hardcoded
+  # REQUIRED NAME: the code calls Client(host="http://ollama:11434") hardcoded
   name: ollama
   namespace: miraflix
 spec:

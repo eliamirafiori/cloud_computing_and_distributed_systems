@@ -1,0 +1,35 @@
+# Values for kube-prometheus-stack (installed via helm in the monitoring
+# namespace). All monitoring configuration lives in this file, versioned
+# in the repo (GitOps): the whole stack is reproducible with one command:
+#
+#   helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+#     --namespace monitoring --create-namespace \
+#     --values k8s/kube-prometheus-stack-values.yaml
+#
+prometheus:
+  prometheusSpec:
+    # Prometheus data survives restarts: PVC on the NFS StorageClass
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nfs
+          resources:
+            requests:
+              storage: 20Gi
+    # Enable the remote-write receiver: k6 sends its metrics here.
+    # Without this flag k6 fails with HTTP 404 on /api/v1/write.
+    enableRemoteWriteReceiver: true
+
+grafana:
+  adminPassword: admin
+  env:
+    # Anonymous access (no login) as in the docker compose setup
+    GF_AUTH_ANONYMOUS_ENABLED: "true"
+    GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
+  service:
+    # Expose Grafana on a fixed NodePort: no separate Service manifest needed,
+    # reachable from any node at http://192.168.1.150:30001
+    type: NodePort
+    nodePort: 30001
