@@ -1,0 +1,188 @@
+==> ConfigMap k6-scripts (miraflix)
+==> Job k6-run (scenario: smoke)
+job.batch/k6-run created
+==> waiting for completion (timeout 300s)...
+job.batch/k6-run condition met
+==> results
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/script.js
+        output: Prometheus remote write (http://kube-prometheus-stack-prometheus.monitoring.svc:9090/api/v1/write)
+
+     scenarios: (100.00%) 1 scenario, 1 max VUs, 1m0s max duration (incl. graceful stop):
+              * smoke: 1 looping VUs for 30s (exec: e2eUpload, gracefulStop: 30s)
+
+
+running (0m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [   3% ] 1 VUs  01.0s/30s
+
+running (0m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [   7% ] 1 VUs  02.0s/30s
+
+running (0m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [  10% ] 1 VUs  03.0s/30s
+
+running (0m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [  13% ] 1 VUs  04.0s/30s
+
+running (0m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [  17% ] 1 VUs  05.0s/30s
+
+running (0m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
+smoke   [  20% ] 1 VUs  06.0s/30s
+
+running (0m07.0s), 1/1 VUs, 1 complete and 0 interrupted iterations
+smoke   [  23% ] 1 VUs  07.0s/30s
+
+running (0m08.0s), 1/1 VUs, 1 complete and 0 interrupted iterations
+smoke   [  27% ] 1 VUs  08.0s/30s
+
+running (0m09.0s), 1/1 VUs, 1 complete and 0 interrupted iterations
+smoke   [  30% ] 1 VUs  09.0s/30s
+
+running (0m10.0s), 1/1 VUs, 2 complete and 0 interrupted iterations
+smoke   [  33% ] 1 VUs  10.0s/30s
+
+running (0m11.0s), 1/1 VUs, 2 complete and 0 interrupted iterations
+smoke   [  37% ] 1 VUs  11.0s/30s
+
+running (0m12.0s), 1/1 VUs, 2 complete and 0 interrupted iterations
+smoke   [  40% ] 1 VUs  12.0s/30s
+
+running (0m13.0s), 1/1 VUs, 3 complete and 0 interrupted iterations
+smoke   [  43% ] 1 VUs  13.0s/30s
+
+running (0m14.0s), 1/1 VUs, 3 complete and 0 interrupted iterations
+smoke   [  47% ] 1 VUs  14.0s/30s
+
+running (0m15.0s), 1/1 VUs, 3 complete and 0 interrupted iterations
+smoke   [  50% ] 1 VUs  15.0s/30s
+
+running (0m16.0s), 1/1 VUs, 4 complete and 0 interrupted iterations
+smoke   [  53% ] 1 VUs  16.0s/30s
+
+running (0m17.0s), 1/1 VUs, 4 complete and 0 interrupted iterations
+smoke   [  57% ] 1 VUs  17.0s/30s
+
+running (0m18.0s), 1/1 VUs, 4 complete and 0 interrupted iterations
+smoke   [  60% ] 1 VUs  18.0s/30s
+
+running (0m19.0s), 1/1 VUs, 5 complete and 0 interrupted iterations
+smoke   [  63% ] 1 VUs  19.0s/30s
+
+running (0m20.0s), 1/1 VUs, 5 complete and 0 interrupted iterations
+smoke   [  67% ] 1 VUs  20.0s/30s
+
+running (0m21.0s), 1/1 VUs, 5 complete and 0 interrupted iterations
+smoke   [  70% ] 1 VUs  21.0s/30s
+
+running (0m22.0s), 1/1 VUs, 6 complete and 0 interrupted iterations
+smoke   [  73% ] 1 VUs  22.0s/30s
+
+running (0m23.0s), 1/1 VUs, 6 complete and 0 interrupted iterations
+smoke   [  77% ] 1 VUs  23.0s/30s
+
+running (0m24.0s), 1/1 VUs, 6 complete and 0 interrupted iterations
+smoke   [  80% ] 1 VUs  24.0s/30s
+
+running (0m25.0s), 1/1 VUs, 7 complete and 0 interrupted iterations
+smoke   [  83% ] 1 VUs  25.0s/30s
+
+running (0m26.0s), 1/1 VUs, 7 complete and 0 interrupted iterations
+smoke   [  87% ] 1 VUs  26.0s/30s
+
+running (0m27.0s), 1/1 VUs, 7 complete and 0 interrupted iterations
+smoke   [  90% ] 1 VUs  27.0s/30s
+
+running (0m28.0s), 1/1 VUs, 7 complete and 0 interrupted iterations
+smoke   [  93% ] 1 VUs  28.0s/30s
+
+running (0m29.0s), 1/1 VUs, 8 complete and 0 interrupted iterations
+smoke   [  97% ] 1 VUs  29.0s/30s
+
+running (0m30.0s), 1/1 VUs, 8 complete and 0 interrupted iterations
+smoke   [ 100% ] 1 VUs  30.0s/30s
+
+running (0m31.0s), 1/1 VUs, 8 complete and 0 interrupted iterations
+smoke ↓ [ 100% ] 1 VUs  30s
+
+
+  █ THRESHOLDS 
+
+    checks{test:load}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:search}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:smoke}
+    ✓ 'rate>0.90' rate=100.00%
+
+    checks{test:stream}
+    ✓ 'rate>0.90' rate=0.00%
+
+    embedding_ready{test:smoke}
+    ✓ 'rate>0.90' rate=100.00%
+
+    http_req_failed{test:load}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:search}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:smoke}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:stream}
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 27      0.866041/s
+    checks_succeeded...: 100.00% 27 out of 27
+    checks_failed......: 0.00%   0 out of 27
+
+    ✓ upload 201
+    ✓ embedding ready
+    ✓ stream 206
+
+    CUSTOM
+    embedding_ready................: 100.00% 9 out of 9
+      { test:smoke }...............: 100.00% 9 out of 9
+    job_duration_ms................: avg=3359   min=3017   med=3019   max=6081     p(90)=3632.2  p(95)=4856.6 
+
+    HTTP
+    http_req_duration..............: avg=23.7ms min=2.73ms med=5.54ms max=201.21ms p(90)=85.88ms p(95)=90.94ms
+      { expected_response:true }...: avg=23.7ms min=2.73ms med=5.54ms max=201.21ms p(90)=85.88ms p(95)=90.94ms
+    http_req_failed................: 0.00%   0 out of 48
+      { test:load }................: 0.00%   0 out of 0
+      { test:search }..............: 0.00%   0 out of 0
+      { test:smoke }...............: 0.00%   0 out of 48
+      { test:stream }..............: 0.00%   0 out of 0
+    http_reqs......................: 48      1.539629/s
+
+    EXECUTION
+    iteration_duration.............: avg=3.46s  min=3.1s   med=3.1s   max=6.29s    p(90)=3.75s   p(95)=5.02s  
+    iterations.....................: 9       0.28868/s
+    vus............................: 1       min=1       max=1
+    vus_max........................: 1       min=1       max=1
+
+    NETWORK
+    data_received..................: 109 kB  3.5 kB/s
+    data_sent......................: 90 kB   2.9 kB/s
+
+
+
+
+running (0m31.2s), 0/1 VUs, 9 complete and 0 interrupted iterations
+smoke ✓ [ 100% ] 1 VUs  30s
+==> flushing RQ queue (rq:queue:videos)...
+==> queue flushed, next test can start immediately

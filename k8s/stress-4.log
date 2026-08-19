@@ -1,0 +1,677 @@
+==> ConfigMap k6-scripts (miraflix)
+==> Job k6-run (scenario: stress)
+job.batch/k6-run created
+==> waiting for completion (timeout 300s)...
+job.batch/k6-run condition met
+==> results
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/script.js
+        output: Prometheus remote write (http://kube-prometheus-stack-prometheus.monitoring.svc:9090/api/v1/write)
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 2m30s max duration (incl. graceful stop):
+              * stress: Up to 20.00 iterations/s for 2m0s over 4 stages (maxVUs: 50-200, exec: e2eUpload, gracefulStop: 30s)
+
+
+running (0m00.9s), 000/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   1% ] 000/050 VUs  0m00.9s/2m0s  01.02 iters/s
+
+running (0m01.9s), 002/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   2% ] 002/050 VUs  0m01.9s/2m0s  01.08 iters/s
+
+running (0m02.9s), 003/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   2% ] 003/050 VUs  0m02.9s/2m0s  01.11 iters/s
+
+running (0m03.9s), 004/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   3% ] 004/050 VUs  0m03.9s/2m0s  01.14 iters/s
+
+running (0m04.9s), 005/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   4% ] 005/050 VUs  0m04.9s/2m0s  01.17 iters/s
+
+running (0m05.9s), 006/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   5% ] 006/050 VUs  0m05.9s/2m0s  01.20 iters/s
+
+running (0m06.9s), 007/050 VUs, 0 complete and 0 interrupted iterations
+stress   [   6% ] 007/050 VUs  0m06.9s/2m0s  01.22 iters/s
+
+running (0m07.9s), 007/050 VUs, 1 complete and 0 interrupted iterations
+stress   [   7% ] 007/050 VUs  0m07.9s/2m0s  01.25 iters/s
+
+running (0m08.9s), 009/050 VUs, 1 complete and 0 interrupted iterations
+stress   [   7% ] 009/050 VUs  0m08.9s/2m0s  01.30 iters/s
+
+running (0m09.9s), 010/050 VUs, 1 complete and 0 interrupted iterations
+stress   [   8% ] 010/050 VUs  0m09.9s/2m0s  01.33 iters/s
+
+running (0m10.9s), 010/050 VUs, 2 complete and 0 interrupted iterations
+stress   [   9% ] 010/050 VUs  0m10.9s/2m0s  01.35 iters/s
+
+running (0m11.9s), 012/050 VUs, 2 complete and 0 interrupted iterations
+stress   [  10% ] 012/050 VUs  0m11.9s/2m0s  01.40 iters/s
+
+running (0m12.9s), 013/050 VUs, 2 complete and 0 interrupted iterations
+stress   [  11% ] 013/050 VUs  0m12.9s/2m0s  01.43 iters/s
+
+running (0m13.9s), 014/050 VUs, 3 complete and 0 interrupted iterations
+stress   [  12% ] 014/050 VUs  0m13.9s/2m0s  01.47 iters/s
+
+running (0m14.9s), 015/050 VUs, 3 complete and 0 interrupted iterations
+stress   [  12% ] 015/050 VUs  0m14.9s/2m0s  01.49 iters/s
+
+running (0m15.9s), 016/050 VUs, 4 complete and 0 interrupted iterations
+stress   [  13% ] 016/050 VUs  0m15.9s/2m0s  01.54 iters/s
+
+running (0m16.9s), 017/050 VUs, 4 complete and 0 interrupted iterations
+stress   [  14% ] 017/050 VUs  0m16.9s/2m0s  01.56 iters/s
+
+running (0m17.9s), 019/050 VUs, 4 complete and 0 interrupted iterations
+stress   [  15% ] 019/050 VUs  0m17.9s/2m0s  01.60 iters/s
+
+running (0m18.9s), 019/050 VUs, 5 complete and 0 interrupted iterations
+stress   [  16% ] 019/050 VUs  0m18.9s/2m0s  01.62 iters/s
+
+running (0m19.9s), 021/050 VUs, 5 complete and 0 interrupted iterations
+stress   [  17% ] 021/050 VUs  0m19.9s/2m0s  01.66 iters/s
+
+running (0m20.9s), 023/050 VUs, 5 complete and 0 interrupted iterations
+stress   [  17% ] 023/050 VUs  0m20.9s/2m0s  01.70 iters/s
+
+running (0m21.9s), 023/050 VUs, 6 complete and 0 interrupted iterations
+stress   [  18% ] 023/050 VUs  0m21.9s/2m0s  01.72 iters/s
+
+running (0m22.9s), 025/050 VUs, 6 complete and 0 interrupted iterations
+stress   [  19% ] 025/050 VUs  0m22.9s/2m0s  01.76 iters/s
+
+running (0m23.9s), 027/050 VUs, 6 complete and 0 interrupted iterations
+stress   [  20% ] 027/050 VUs  0m23.9s/2m0s  01.80 iters/s
+
+running (0m24.9s), 028/050 VUs, 7 complete and 0 interrupted iterations
+stress   [  21% ] 028/050 VUs  0m24.9s/2m0s  01.83 iters/s
+
+running (0m25.9s), 030/050 VUs, 7 complete and 0 interrupted iterations
+stress   [  22% ] 030/050 VUs  0m25.9s/2m0s  01.87 iters/s
+
+running (0m26.9s), 032/050 VUs, 7 complete and 0 interrupted iterations
+stress   [  22% ] 032/050 VUs  0m26.9s/2m0s  01.91 iters/s
+
+running (0m27.9s), 032/050 VUs, 8 complete and 0 interrupted iterations
+stress   [  23% ] 032/050 VUs  0m27.9s/2m0s  01.92 iters/s
+
+running (0m28.9s), 034/050 VUs, 8 complete and 0 interrupted iterations
+stress   [  24% ] 034/050 VUs  0m28.9s/2m0s  01.96 iters/s
+
+running (0m29.9s), 036/050 VUs, 8 complete and 0 interrupted iterations
+stress   [  25% ] 036/050 VUs  0m29.9s/2m0s  01.99 iters/s
+
+running (0m30.9s), 037/050 VUs, 9 complete and 0 interrupted iterations
+stress   [  26% ] 037/050 VUs  0m30.9s/2m0s  02.07 iters/s
+
+running (0m31.9s), 040/050 VUs, 9 complete and 0 interrupted iterations
+stress   [  27% ] 040/050 VUs  0m31.9s/2m0s  02.21 iters/s
+
+running (0m32.9s), 042/050 VUs, 9 complete and 0 interrupted iterations
+stress   [  27% ] 042/050 VUs  0m32.9s/2m0s  02.30 iters/s
+
+running (0m33.9s), 043/050 VUs, 10 complete and 0 interrupted iterations
+stress   [  28% ] 043/050 VUs  0m33.9s/2m0s  02.39 iters/s
+
+running (0m34.9s), 046/050 VUs, 10 complete and 0 interrupted iterations
+stress   [  29% ] 046/050 VUs  0m34.9s/2m0s  02.51 iters/s
+
+running (0m35.9s), 048/050 VUs, 10 complete and 0 interrupted iterations
+stress   [  30% ] 048/050 VUs  0m35.9s/2m0s  02.59 iters/s
+
+running (0m36.9s), 050/050 VUs, 11 complete and 0 interrupted iterations
+stress   [  31% ] 050/050 VUs  0m36.9s/2m0s  02.70 iters/s
+
+running (0m37.9s), 051/052 VUs, 11 complete and 0 interrupted iterations
+stress   [  32% ] 051/052 VUs  0m37.9s/2m0s  02.81 iters/s
+
+running (0m39.0s), 052/053 VUs, 11 complete and 0 interrupted iterations
+stress   [  32% ] 052/053 VUs  0m39.0s/2m0s  02.88 iters/s
+
+running (0m40.0s), 054/054 VUs, 11 complete and 0 interrupted iterations
+stress   [  33% ] 054/054 VUs  0m40.0s/2m0s  02.98 iters/s
+
+running (0m40.9s), 055/055 VUs, 12 complete and 0 interrupted iterations
+stress   [  34% ] 055/055 VUs  0m40.9s/2m0s  03.08 iters/s
+
+running (0m41.9s), 056/056 VUs, 13 complete and 0 interrupted iterations
+stress   [  35% ] 056/056 VUs  0m41.9s/2m0s  03.21 iters/s
+
+running (0m42.9s), 057/058 VUs, 14 complete and 0 interrupted iterations
+stress   [  36% ] 057/058 VUs  0m42.9s/2m0s  03.30 iters/s
+
+running (0m43.9s), 058/058 VUs, 16 complete and 0 interrupted iterations
+stress   [  37% ] 058/058 VUs  0m43.9s/2m0s  03.39 iters/s
+
+running (0m44.9s), 058/059 VUs, 17 complete and 0 interrupted iterations
+stress   [  38% ] 058/059 VUs  0m45.3s/2m0s  03.51 iters/s
+
+running (0m45.9s), 060/060 VUs, 18 complete and 0 interrupted iterations
+stress   [  38% ] 060/060 VUs  0m45.9s/2m0s  03.59 iters/s
+
+running (0m46.9s), 061/061 VUs, 20 complete and 0 interrupted iterations
+stress   [  39% ] 061/061 VUs  0m46.9s/2m0s  03.70 iters/s
+
+running (0m47.9s), 062/063 VUs, 20 complete and 0 interrupted iterations
+stress   [  40% ] 062/063 VUs  0m47.9s/2m0s  03.78 iters/s
+
+running (0m49.0s), 063/064 VUs, 22 complete and 0 interrupted iterations
+stress   [  41% ] 063/064 VUs  0m49.0s/2m0s  03.89 iters/s
+
+running (0m49.9s), 064/065 VUs, 22 complete and 0 interrupted iterations
+stress   [  42% ] 064/065 VUs  0m49.9s/2m0s  03.99 iters/s
+
+running (0m50.9s), 066/067 VUs, 22 complete and 0 interrupted iterations
+stress   [  42% ] 066/067 VUs  0m50.9s/2m0s  04.09 iters/s
+
+running (0m51.9s), 068/069 VUs, 22 complete and 0 interrupted iterations
+stress   [  43% ] 068/069 VUs  0m51.9s/2m0s  04.18 iters/s
+
+running (0m52.9s), 071/071 VUs, 22 complete and 0 interrupted iterations
+stress   [  44% ] 071/071 VUs  0m52.9s/2m0s  04.30 iters/s
+
+running (0m53.9s), 073/073 VUs, 22 complete and 0 interrupted iterations
+stress   [  45% ] 073/073 VUs  0m53.9s/2m0s  04.39 iters/s
+
+running (0m54.9s), 075/075 VUs, 22 complete and 0 interrupted iterations
+stress   [  46% ] 075/075 VUs  0m54.9s/2m0s  04.48 iters/s
+
+running (0m55.9s), 077/078 VUs, 22 complete and 0 interrupted iterations
+stress   [  47% ] 077/078 VUs  0m55.9s/2m0s  04.59 iters/s
+
+running (0m56.9s), 080/080 VUs, 22 complete and 0 interrupted iterations
+stress   [  47% ] 080/080 VUs  0m56.9s/2m0s  04.70 iters/s
+
+running (0m57.9s), 082/082 VUs, 22 complete and 0 interrupted iterations
+stress   [  48% ] 082/082 VUs  0m57.9s/2m0s  04.79 iters/s
+
+running (0m58.9s), 084/085 VUs, 22 complete and 0 interrupted iterations
+stress   [  49% ] 084/085 VUs  0m58.9s/2m0s  04.89 iters/s
+
+running (0m59.9s), 087/087 VUs, 22 complete and 0 interrupted iterations
+stress   [  50% ] 087/087 VUs  0m59.9s/2m0s  04.99 iters/s
+
+running (1m00.9s), 089/090 VUs, 22 complete and 0 interrupted iterations
+stress   [  51% ] 089/090 VUs  1m00.9s/2m0s  05.15 iters/s
+
+running (1m01.9s), 092/092 VUs, 22 complete and 0 interrupted iterations
+stress   [  52% ] 092/092 VUs  1m01.9s/2m0s  05.34 iters/s
+
+running (1m02.9s), 095/095 VUs, 22 complete and 0 interrupted iterations
+stress   [  52% ] 095/095 VUs  1m02.9s/2m0s  05.49 iters/s
+
+running (1m04.0s), 097/098 VUs, 22 complete and 0 interrupted iterations
+stress   [  53% ] 097/098 VUs  1m04.0s/2m0s  05.67 iters/s
+
+running (1m04.9s), 100/101 VUs, 22 complete and 0 interrupted iterations
+stress   [  54% ] 100/101 VUs  1m04.9s/2m0s  05.82 iters/s
+
+running (1m05.9s), 103/104 VUs, 22 complete and 0 interrupted iterations
+stress   [  55% ] 103/104 VUs  1m05.9s/2m0s  05.99 iters/s
+
+running (1m06.9s), 106/107 VUs, 22 complete and 0 interrupted iterations
+stress   [  56% ] 106/107 VUs  1m06.9s/2m0s  06.15 iters/s
+
+running (1m07.9s), 109/110 VUs, 22 complete and 0 interrupted iterations
+stress   [  57% ] 109/110 VUs  1m07.9s/2m0s  06.31 iters/s
+
+running (1m08.9s), 113/113 VUs, 22 complete and 0 interrupted iterations
+stress   [  57% ] 113/113 VUs  1m08.9s/2m0s  06.49 iters/s
+
+running (1m09.9s), 116/116 VUs, 22 complete and 0 interrupted iterations
+stress   [  58% ] 116/116 VUs  1m09.9s/2m0s  06.65 iters/s
+
+running (1m10.9s), 119/120 VUs, 22 complete and 0 interrupted iterations
+stress   [  59% ] 119/120 VUs  1m10.9s/2m0s  06.82 iters/s
+
+running (1m11.9s), 123/123 VUs, 22 complete and 0 interrupted iterations
+stress   [  60% ] 123/123 VUs  1m11.9s/2m0s  06.99 iters/s
+
+running (1m12.9s), 126/127 VUs, 22 complete and 0 interrupted iterations
+stress   [  61% ] 126/127 VUs  1m12.9s/2m0s  07.15 iters/s
+
+running (1m13.9s), 130/130 VUs, 22 complete and 0 interrupted iterations
+stress   [  62% ] 130/130 VUs  1m13.9s/2m0s  07.31 iters/s
+
+running (1m14.9s), 134/134 VUs, 22 complete and 0 interrupted iterations
+stress   [  62% ] 134/134 VUs  1m14.9s/2m0s  07.49 iters/s
+
+running (1m15.9s), 137/138 VUs, 22 complete and 0 interrupted iterations
+stress   [  63% ] 137/138 VUs  1m15.9s/2m0s  07.65 iters/s
+
+running (1m16.9s), 141/142 VUs, 22 complete and 0 interrupted iterations
+stress   [  64% ] 141/142 VUs  1m16.9s/2m0s  07.82 iters/s
+
+running (1m17.9s), 145/146 VUs, 22 complete and 0 interrupted iterations
+stress   [  65% ] 145/146 VUs  1m17.9s/2m0s  07.99 iters/s
+
+running (1m18.9s), 149/149 VUs, 22 complete and 0 interrupted iterations
+stress   [  66% ] 149/149 VUs  1m18.9s/2m0s  08.15 iters/s
+
+running (1m19.9s), 153/154 VUs, 22 complete and 0 interrupted iterations
+stress   [  67% ] 153/154 VUs  1m19.9s/2m0s  08.32 iters/s
+
+running (1m20.9s), 158/158 VUs, 22 complete and 0 interrupted iterations
+stress   [  67% ] 158/158 VUs  1m20.9s/2m0s  08.50 iters/s
+
+running (1m21.9s), 162/162 VUs, 22 complete and 0 interrupted iterations
+stress   [  68% ] 162/162 VUs  1m21.9s/2m0s  08.65 iters/s
+
+running (1m22.9s), 166/167 VUs, 22 complete and 0 interrupted iterations
+stress   [  69% ] 166/167 VUs  1m22.9s/2m0s  08.82 iters/s
+
+running (1m23.9s), 171/171 VUs, 22 complete and 0 interrupted iterations
+stress   [  70% ] 171/171 VUs  1m23.9s/2m0s  08.99 iters/s
+
+running (1m24.9s), 175/176 VUs, 22 complete and 0 interrupted iterations
+stress   [  71% ] 175/176 VUs  1m24.9s/2m0s  09.16 iters/s
+
+running (1m25.9s), 180/180 VUs, 22 complete and 0 interrupted iterations
+stress   [  72% ] 180/180 VUs  1m25.9s/2m0s  09.32 iters/s
+
+running (1m26.9s), 185/185 VUs, 22 complete and 0 interrupted iterations
+stress   [  72% ] 185/185 VUs  1m26.9s/2m0s  09.50 iters/s
+
+running (1m27.9s), 189/190 VUs, 22 complete and 0 interrupted iterations
+stress   [  73% ] 189/190 VUs  1m27.9s/2m0s  09.65 iters/s
+
+running (1m28.9s), 194/194 VUs, 22 complete and 0 interrupted iterations
+stress   [  74% ] 194/194 VUs  1m28.9s/2m0s  09.82 iters/s
+
+running (1m29.9s), 198/199 VUs, 22 complete and 0 interrupted iterations
+stress   [  75% ] 198/199 VUs  1m29.9s/2m0s  09.97 iters/s
+time="2026-08-19T20:52:25Z" level=warning msg="Insufficient VUs, reached 200 active VUs and cannot initialize more" executor=ramping-arrival-rate scenario=stress
+
+running (1m30.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  76% ] 200/200 VUs  1m30.9s/2m0s  10.31 iters/s
+
+running (1m31.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  77% ] 200/200 VUs  1m31.9s/2m0s  10.66 iters/s
+
+running (1m32.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  77% ] 200/200 VUs  1m32.9s/2m0s  10.97 iters/s
+
+running (1m33.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  78% ] 200/200 VUs  1m33.9s/2m0s  11.30 iters/s
+
+running (1m34.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  79% ] 200/200 VUs  1m34.9s/2m0s  11.65 iters/s
+
+running (1m35.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  80% ] 200/200 VUs  1m35.9s/2m0s  11.99 iters/s
+
+running (1m36.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  81% ] 200/200 VUs  1m36.9s/2m0s  12.32 iters/s
+
+running (1m37.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  82% ] 200/200 VUs  1m37.9s/2m0s  12.64 iters/s
+
+running (1m38.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  82% ] 200/200 VUs  1m38.9s/2m0s  12.97 iters/s
+
+running (1m39.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  83% ] 200/200 VUs  1m39.9s/2m0s  13.30 iters/s
+
+running (1m40.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  84% ] 200/200 VUs  1m40.9s/2m0s  13.65 iters/s
+
+running (1m41.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  85% ] 200/200 VUs  1m41.9s/2m0s  13.99 iters/s
+
+running (1m42.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  86% ] 200/200 VUs  1m42.9s/2m0s  14.32 iters/s
+
+running (1m43.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  87% ] 200/200 VUs  1m43.9s/2m0s  14.64 iters/s
+
+running (1m44.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  87% ] 200/200 VUs  1m44.9s/2m0s  14.98 iters/s
+
+running (1m45.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  88% ] 200/200 VUs  1m45.9s/2m0s  15.31 iters/s
+
+running (1m46.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  89% ] 200/200 VUs  1m46.9s/2m0s  15.65 iters/s
+
+running (1m47.9s), 200/200 VUs, 22 complete and 0 interrupted iterations
+stress   [  90% ] 200/200 VUs  1m47.9s/2m0s  15.99 iters/s
+time="2026-08-19T20:52:43Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:43Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m48.9s), 200/200 VUs, 24 complete and 0 interrupted iterations
+stress   [  91% ] 200/200 VUs  1m48.9s/2m0s  16.32 iters/s
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14094\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14069\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14062\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14060\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14075\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14067\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14092\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14057\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14073\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14071\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14077\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14089\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14100\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14098\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14055\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14084\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14102\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14066\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14082\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/streams/video/14053\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14095\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14093\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14097\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14107\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14080\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14108\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14096\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14109\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14099\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14105\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14087\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14103\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14061\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14104\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14054\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14088\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14083\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14064\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14106\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14070\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14059\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14068\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14085\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14076\": request timeout"
+time="2026-08-19T20:52:44Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14058\": request timeout"
+
+running (1m49.9s), 200/200 VUs, 26 complete and 0 interrupted iterations
+stress   [  92% ] 200/200 VUs  1m49.9s/2m0s  16.64 iters/s
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14111\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14112\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14065\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14101\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14056\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14079\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14086\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14072\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14110\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14081\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14091\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14074\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14090\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14113\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14078\": request timeout"
+time="2026-08-19T20:52:45Z" level=warning msg="Request Failed" error="Get \"http://my-backend:8000/videos/14063\": request timeout"
+
+running (1m50.9s), 200/200 VUs, 28 complete and 0 interrupted iterations
+stress   [  92% ] 200/200 VUs  1m50.9s/2m0s  16.98 iters/s
+time="2026-08-19T20:52:46Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:46Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m51.9s), 200/200 VUs, 30 complete and 0 interrupted iterations
+stress   [  93% ] 200/200 VUs  1m51.9s/2m0s  17.31 iters/s
+time="2026-08-19T20:52:47Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:47Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:48Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m52.9s), 200/200 VUs, 33 complete and 0 interrupted iterations
+stress   [  94% ] 200/200 VUs  1m52.9s/2m0s  17.65 iters/s
+time="2026-08-19T20:52:48Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:48Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m53.9s), 200/200 VUs, 35 complete and 0 interrupted iterations
+stress   [  95% ] 200/200 VUs  1m53.9s/2m0s  17.97 iters/s
+time="2026-08-19T20:52:49Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:49Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m54.9s), 200/200 VUs, 37 complete and 0 interrupted iterations
+stress   [  96% ] 200/200 VUs  1m54.9s/2m0s  18.32 iters/s
+time="2026-08-19T20:52:50Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:50Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m55.9s), 200/200 VUs, 39 complete and 0 interrupted iterations
+stress   [  97% ] 200/200 VUs  1m55.9s/2m0s  18.65 iters/s
+time="2026-08-19T20:52:51Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:51Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:52Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m56.9s), 200/200 VUs, 42 complete and 0 interrupted iterations
+stress   [  97% ] 200/200 VUs  1m56.9s/2m0s  18.98 iters/s
+time="2026-08-19T20:52:52Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:52Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m57.9s), 200/200 VUs, 44 complete and 0 interrupted iterations
+stress   [  98% ] 200/200 VUs  1m57.9s/2m0s  19.31 iters/s
+time="2026-08-19T20:52:53Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:53Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m58.9s), 200/200 VUs, 46 complete and 0 interrupted iterations
+stress   [  99% ] 200/200 VUs  1m58.9s/2m0s  19.64 iters/s
+time="2026-08-19T20:52:54Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:54Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:54Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (1m59.9s), 200/200 VUs, 49 complete and 0 interrupted iterations
+stress   [ 100% ] 200/200 VUs  1m59.9s/2m0s  19.97 iters/s
+time="2026-08-19T20:52:55Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:55Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m00.9s), 198/200 VUs, 51 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:52:56Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:56Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:56Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m01.9s), 195/200 VUs, 54 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:52:57Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:57Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:57Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m02.9s), 192/200 VUs, 57 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:52:58Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:58Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m03.9s), 190/200 VUs, 59 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:52:59Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:59Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:52:59Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m04.9s), 187/200 VUs, 62 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:00Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:00Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:00Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m05.9s), 184/200 VUs, 65 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:01Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:01Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:01Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m06.9s), 181/200 VUs, 68 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:02Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:02Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:02Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m07.9s), 178/200 VUs, 71 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:03Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:03Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:03Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:03Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m08.9s), 174/200 VUs, 75 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:04Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:04Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:04Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m09.9s), 171/200 VUs, 78 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:05Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:05Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:05Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m10.9s), 168/200 VUs, 81 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:06Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:06Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:06Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m11.9s), 165/200 VUs, 84 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:07Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:07Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m12.9s), 163/200 VUs, 86 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:08Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+time="2026-08-19T20:53:08Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m13.9s), 161/200 VUs, 88 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+time="2026-08-19T20:53:09Z" level=warning msg="Request Failed" error="Post \"http://my-backend:8000/uploads/video/\": request timeout"
+
+running (2m14.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m15.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m16.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m18.0s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m18.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m19.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m20.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m21.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m22.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m23.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m24.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m25.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m26.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m27.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m28.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+running (2m29.9s), 160/200 VUs, 89 complete and 0 interrupted iterations
+stress ↓ [ 100% ] 200/200 VUs  2m0s  19.99 iters/s
+
+
+  █ THRESHOLDS 
+
+    checks{test:load}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:search}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:smoke}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:stream}
+    ✓ 'rate>0.90' rate=0.00%
+
+    embedding_ready{test:smoke}
+    ✓ 'rate>0.90' rate=0.00%
+
+    http_req_failed{test:load}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:search}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:smoke}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:stream}
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 269    1.793124/s
+    checks_succeeded...: 70.63% 190 out of 269
+    checks_failed......: 29.36% 79 out of 269
+
+    ✗ upload 201
+      ↳  70% — ✓ 156 / ✗ 66
+    ✗ embedding ready
+      ↳  50% — ✓ 12 / ✗ 12
+    ✗ stream 206
+      ↳  95% — ✓ 22 / ✗ 1
+
+    CUSTOM
+    embedding_ready................: 13.33% 12 out of 90
+      { test:smoke }...............: 0.00%  0 out of 0
+    job_duration_ms................: avg=26605.041667 min=6077   med=30292.5 max=91333  p(90)=31505.9  p(95)=31707.1 
+
+    HTTP
+    http_req_duration..............: avg=3.13s        min=2.58ms med=13.39ms max=1m0s   p(90)=232.34ms p(95)=30.39s  
+      { expected_response:true }...: avg=191.11ms     min=2.58ms med=10.97ms max=30.41s p(90)=169.77ms p(95)=234.64ms
+    http_req_failed................: 4.92%  127 out of 2580
+      { test:load }................: 0.00%  0 out of 0
+      { test:search }..............: 0.00%  0 out of 0
+      { test:smoke }...............: 0.00%  0 out of 0
+      { test:stream }..............: 0.00%  0 out of 0
+    http_reqs......................: 2580   17.197995/s
+
+    EXECUTION
+    dropped_iterations.............: 575    3.832887/s
+    iteration_duration.............: avg=51.36s       min=6.22s  med=1m0s    max=1m31s  p(90)=1m0s     p(95)=1m0s    
+    iterations.....................: 89     0.593264/s
+    vus............................: 160    min=0           max=200
+    vus_max........................: 200    min=50          max=200
+
+    NETWORK
+    data_received..................: 888 kB 5.9 kB/s
+    data_sent......................: 2.6 MB 17 kB/s
+
+
+
+
+running (2m30.0s), 000/200 VUs, 89 complete and 160 interrupted iterations
+stress ✓ [ 100% ] 160/200 VUs  2m0s  19.99 iters/s
+==> flushing RQ queue (rq:queue:videos)...
+==> queue flushed, next test can start immediately

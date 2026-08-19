@@ -1,0 +1,272 @@
+==> ConfigMap k6-scripts (miraflix)
+==> Job k6-run (scenario: stream)
+job.batch/k6-run created
+==> waiting for completion (timeout 300s)...
+job.batch/k6-run condition met
+==> results
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/script.js
+        output: Prometheus remote write (http://kube-prometheus-stack-prometheus.monitoring.svc:9090/api/v1/write)
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m30s max duration (incl. graceful stop):
+              * stream: 10.00 iterations/s for 1m0s (maxVUs: 20-50, exec: streamVideo, gracefulStop: 30s)
+
+
+running (0m01.0s), 00/20 VUs, 10 complete and 0 interrupted iterations
+stream   [   2% ] 00/20 VUs  0m01.0s/1m0s  10.00 iters/s
+
+running (0m02.0s), 00/20 VUs, 20 complete and 0 interrupted iterations
+stream   [   3% ] 00/20 VUs  0m02.0s/1m0s  10.00 iters/s
+
+running (0m03.0s), 00/20 VUs, 30 complete and 0 interrupted iterations
+stream   [   5% ] 00/20 VUs  0m03.0s/1m0s  10.00 iters/s
+
+running (0m04.0s), 00/20 VUs, 40 complete and 0 interrupted iterations
+stream   [   7% ] 00/20 VUs  0m04.0s/1m0s  10.00 iters/s
+
+running (0m05.0s), 00/20 VUs, 50 complete and 0 interrupted iterations
+stream   [   8% ] 00/20 VUs  0m05.0s/1m0s  10.00 iters/s
+
+running (0m06.0s), 00/20 VUs, 60 complete and 0 interrupted iterations
+stream   [  10% ] 00/20 VUs  0m06.0s/1m0s  10.00 iters/s
+
+running (0m07.0s), 00/20 VUs, 70 complete and 0 interrupted iterations
+stream   [  12% ] 00/20 VUs  0m07.0s/1m0s  10.00 iters/s
+
+running (0m08.0s), 00/20 VUs, 80 complete and 0 interrupted iterations
+stream   [  13% ] 00/20 VUs  0m08.0s/1m0s  10.00 iters/s
+
+running (0m09.0s), 00/20 VUs, 90 complete and 0 interrupted iterations
+stream   [  15% ] 00/20 VUs  0m09.0s/1m0s  10.00 iters/s
+
+running (0m10.0s), 00/20 VUs, 100 complete and 0 interrupted iterations
+stream   [  17% ] 00/20 VUs  0m10.0s/1m0s  10.00 iters/s
+
+running (0m11.0s), 00/20 VUs, 110 complete and 0 interrupted iterations
+stream   [  18% ] 00/20 VUs  0m11.0s/1m0s  10.00 iters/s
+
+running (0m12.0s), 00/20 VUs, 120 complete and 0 interrupted iterations
+stream   [  20% ] 00/20 VUs  0m12.0s/1m0s  10.00 iters/s
+
+running (0m13.0s), 00/20 VUs, 130 complete and 0 interrupted iterations
+stream   [  22% ] 00/20 VUs  0m13.0s/1m0s  10.00 iters/s
+
+running (0m14.0s), 00/20 VUs, 140 complete and 0 interrupted iterations
+stream   [  23% ] 00/20 VUs  0m14.0s/1m0s  10.00 iters/s
+
+running (0m15.0s), 00/20 VUs, 150 complete and 0 interrupted iterations
+stream   [  25% ] 00/20 VUs  0m15.0s/1m0s  10.00 iters/s
+
+running (0m16.0s), 00/20 VUs, 160 complete and 0 interrupted iterations
+stream   [  27% ] 00/20 VUs  0m16.0s/1m0s  10.00 iters/s
+
+running (0m17.0s), 00/20 VUs, 170 complete and 0 interrupted iterations
+stream   [  28% ] 00/20 VUs  0m17.0s/1m0s  10.00 iters/s
+
+running (0m18.0s), 00/20 VUs, 180 complete and 0 interrupted iterations
+stream   [  30% ] 00/20 VUs  0m18.0s/1m0s  10.00 iters/s
+
+running (0m19.0s), 00/20 VUs, 190 complete and 0 interrupted iterations
+stream   [  32% ] 00/20 VUs  0m19.0s/1m0s  10.00 iters/s
+
+running (0m20.0s), 00/20 VUs, 200 complete and 0 interrupted iterations
+stream   [  33% ] 00/20 VUs  0m20.0s/1m0s  10.00 iters/s
+
+running (0m21.0s), 00/20 VUs, 210 complete and 0 interrupted iterations
+stream   [  35% ] 00/20 VUs  0m21.0s/1m0s  10.00 iters/s
+
+running (0m22.0s), 00/20 VUs, 220 complete and 0 interrupted iterations
+stream   [  37% ] 00/20 VUs  0m22.0s/1m0s  10.00 iters/s
+
+running (0m23.0s), 00/20 VUs, 230 complete and 0 interrupted iterations
+stream   [  38% ] 00/20 VUs  0m23.0s/1m0s  10.00 iters/s
+
+running (0m24.0s), 00/20 VUs, 240 complete and 0 interrupted iterations
+stream   [  40% ] 00/20 VUs  0m24.0s/1m0s  10.00 iters/s
+
+running (0m25.0s), 00/20 VUs, 250 complete and 0 interrupted iterations
+stream   [  42% ] 00/20 VUs  0m25.0s/1m0s  10.00 iters/s
+
+running (0m26.0s), 00/20 VUs, 260 complete and 0 interrupted iterations
+stream   [  43% ] 00/20 VUs  0m26.0s/1m0s  10.00 iters/s
+
+running (0m27.0s), 00/20 VUs, 270 complete and 0 interrupted iterations
+stream   [  45% ] 00/20 VUs  0m27.0s/1m0s  10.00 iters/s
+
+running (0m28.0s), 00/20 VUs, 280 complete and 0 interrupted iterations
+stream   [  47% ] 00/20 VUs  0m28.0s/1m0s  10.00 iters/s
+
+running (0m29.0s), 00/20 VUs, 290 complete and 0 interrupted iterations
+stream   [  48% ] 00/20 VUs  0m29.0s/1m0s  10.00 iters/s
+
+running (0m30.0s), 00/20 VUs, 300 complete and 0 interrupted iterations
+stream   [  50% ] 00/20 VUs  0m30.0s/1m0s  10.00 iters/s
+
+running (0m31.0s), 00/20 VUs, 310 complete and 0 interrupted iterations
+stream   [  52% ] 00/20 VUs  0m31.0s/1m0s  10.00 iters/s
+
+running (0m32.0s), 00/20 VUs, 320 complete and 0 interrupted iterations
+stream   [  53% ] 00/20 VUs  0m32.0s/1m0s  10.00 iters/s
+
+running (0m33.0s), 00/20 VUs, 330 complete and 0 interrupted iterations
+stream   [  55% ] 00/20 VUs  0m33.0s/1m0s  10.00 iters/s
+
+running (0m34.0s), 00/20 VUs, 340 complete and 0 interrupted iterations
+stream   [  57% ] 00/20 VUs  0m34.0s/1m0s  10.00 iters/s
+
+running (0m35.0s), 00/20 VUs, 350 complete and 0 interrupted iterations
+stream   [  58% ] 00/20 VUs  0m35.0s/1m0s  10.00 iters/s
+
+running (0m36.0s), 00/20 VUs, 360 complete and 0 interrupted iterations
+stream   [  60% ] 00/20 VUs  0m36.0s/1m0s  10.00 iters/s
+
+running (0m37.0s), 00/20 VUs, 370 complete and 0 interrupted iterations
+stream   [  62% ] 00/20 VUs  0m37.0s/1m0s  10.00 iters/s
+
+running (0m38.0s), 00/20 VUs, 380 complete and 0 interrupted iterations
+stream   [  63% ] 00/20 VUs  0m38.0s/1m0s  10.00 iters/s
+
+running (0m39.0s), 00/20 VUs, 390 complete and 0 interrupted iterations
+stream   [  65% ] 00/20 VUs  0m39.0s/1m0s  10.00 iters/s
+
+running (0m40.0s), 00/20 VUs, 400 complete and 0 interrupted iterations
+stream   [  67% ] 00/20 VUs  0m40.0s/1m0s  10.00 iters/s
+
+running (0m41.0s), 00/20 VUs, 410 complete and 0 interrupted iterations
+stream   [  68% ] 00/20 VUs  0m41.0s/1m0s  10.00 iters/s
+
+running (0m42.0s), 00/20 VUs, 420 complete and 0 interrupted iterations
+stream   [  70% ] 00/20 VUs  0m42.0s/1m0s  10.00 iters/s
+
+running (0m43.0s), 00/20 VUs, 430 complete and 0 interrupted iterations
+stream   [  72% ] 00/20 VUs  0m43.0s/1m0s  10.00 iters/s
+
+running (0m44.0s), 00/20 VUs, 440 complete and 0 interrupted iterations
+stream   [  73% ] 00/20 VUs  0m44.0s/1m0s  10.00 iters/s
+
+running (0m45.0s), 00/20 VUs, 450 complete and 0 interrupted iterations
+stream   [  75% ] 00/20 VUs  0m45.0s/1m0s  10.00 iters/s
+
+running (0m46.0s), 00/20 VUs, 460 complete and 0 interrupted iterations
+stream   [  77% ] 00/20 VUs  0m46.0s/1m0s  10.00 iters/s
+
+running (0m47.0s), 00/20 VUs, 470 complete and 0 interrupted iterations
+stream   [  78% ] 00/20 VUs  0m47.0s/1m0s  10.00 iters/s
+
+running (0m48.0s), 00/20 VUs, 480 complete and 0 interrupted iterations
+stream   [  80% ] 00/20 VUs  0m48.0s/1m0s  10.00 iters/s
+
+running (0m49.0s), 00/20 VUs, 490 complete and 0 interrupted iterations
+stream   [  82% ] 00/20 VUs  0m49.0s/1m0s  10.00 iters/s
+
+running (0m50.0s), 00/20 VUs, 500 complete and 0 interrupted iterations
+stream   [  83% ] 00/20 VUs  0m50.0s/1m0s  10.00 iters/s
+
+running (0m51.0s), 00/20 VUs, 510 complete and 0 interrupted iterations
+stream   [  85% ] 00/20 VUs  0m51.0s/1m0s  10.00 iters/s
+
+running (0m52.0s), 00/20 VUs, 520 complete and 0 interrupted iterations
+stream   [  87% ] 00/20 VUs  0m52.0s/1m0s  10.00 iters/s
+
+running (0m53.0s), 00/20 VUs, 530 complete and 0 interrupted iterations
+stream   [  88% ] 00/20 VUs  0m53.0s/1m0s  10.00 iters/s
+
+running (0m54.0s), 00/20 VUs, 540 complete and 0 interrupted iterations
+stream   [  90% ] 00/20 VUs  0m54.0s/1m0s  10.00 iters/s
+
+running (0m55.0s), 00/20 VUs, 550 complete and 0 interrupted iterations
+stream   [  92% ] 00/20 VUs  0m55.0s/1m0s  10.00 iters/s
+
+running (0m56.0s), 00/20 VUs, 560 complete and 0 interrupted iterations
+stream   [  93% ] 00/20 VUs  0m56.0s/1m0s  10.00 iters/s
+
+running (0m57.0s), 00/20 VUs, 570 complete and 0 interrupted iterations
+stream   [  95% ] 00/20 VUs  0m57.0s/1m0s  10.00 iters/s
+
+running (0m58.0s), 00/20 VUs, 580 complete and 0 interrupted iterations
+stream   [  97% ] 00/20 VUs  0m58.0s/1m0s  10.00 iters/s
+
+running (0m59.0s), 00/20 VUs, 590 complete and 0 interrupted iterations
+stream   [  98% ] 00/20 VUs  0m59.0s/1m0s  10.00 iters/s
+
+running (1m00.0s), 00/20 VUs, 600 complete and 0 interrupted iterations
+stream   [ 100% ] 00/20 VUs  1m00.0s/1m0s  10.00 iters/s
+
+
+  █ THRESHOLDS 
+
+    checks{test:load}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:search}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:smoke}
+    ✓ 'rate>0.90' rate=0.00%
+
+    checks{test:stream}
+    ✓ 'rate>0.90' rate=100.00%
+
+    embedding_ready{test:smoke}
+    ✓ 'rate>0.90' rate=0.00%
+
+    http_req_failed{test:load}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:search}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:smoke}
+    ✓ 'rate<0.01' rate=0.00%
+
+    http_req_failed{test:stream}
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 600     9.999826/s
+    checks_succeeded...: 100.00% 600 out of 600
+    checks_failed......: 0.00%   0 out of 600
+
+    ✓ stream 206
+
+    CUSTOM
+    embedding_ready................: 0.00%  0 out of 0
+      { test:smoke }...............: 0.00%  0 out of 0
+
+    HTTP
+    http_req_duration..............: avg=2.63ms min=1.96ms med=2.51ms max=7.8ms  p(90)=3.18ms p(95)=3.77ms
+      { expected_response:true }...: avg=2.63ms min=1.96ms med=2.51ms max=7.8ms  p(90)=3.18ms p(95)=3.77ms
+    http_req_failed................: 0.00%  0 out of 600
+      { test:load }................: 0.00%  0 out of 0
+      { test:search }..............: 0.00%  0 out of 0
+      { test:smoke }...............: 0.00%  0 out of 0
+      { test:stream }..............: 0.00%  0 out of 600
+    http_reqs......................: 600    9.999826/s
+
+    EXECUTION
+    iteration_duration.............: avg=2.86ms min=2.14ms med=2.74ms max=9.31ms p(90)=3.4ms  p(95)=3.98ms
+    iterations.....................: 600    9.999826/s
+    vus............................: 0      min=0        max=0 
+    vus_max........................: 20     min=20       max=20
+
+    NETWORK
+    data_received..................: 724 kB 12 kB/s
+    data_sent......................: 65 kB  1.1 kB/s
+
+
+
+
+running (1m00.0s), 00/20 VUs, 600 complete and 0 interrupted iterations
+stream ✓ [ 100% ] 00/20 VUs  1m0s  10.00 iters/s
+==> flushing RQ queue (rq:queue:videos)...
+==> queue flushed, next test can start immediately
