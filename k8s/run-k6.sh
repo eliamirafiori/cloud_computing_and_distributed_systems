@@ -99,9 +99,14 @@ kubectl wait --for=condition=complete "job/${JOB}" -n "${NS}" --timeout="${TIMEO
   || echo "!! job did not complete (failed or timed out) — logs below"
 
 echo "==> results"
-kubectl logs "job/${JOB}" -n "${NS}" --tail=40 2>/dev/null \
-  | grep -E "checks|✓|✗|http_req_failed|http_reqs|iterations\.|embedding_ready|crossed" \
-  || kubectl logs "job/${JOB}" -n "${NS}" --tail=40 2>/dev/null || true
+if [ "${K6_FULL_LOG:-0}" = "1" ]; then
+  # full log (no filtering): needed by the benchmark analysis
+  kubectl logs "job/${JOB}" -n "${NS}" 2>/dev/null || true
+else
+  kubectl logs "job/${JOB}" -n "${NS}" --tail=40 2>/dev/null \
+    | grep -E "checks|✓|✗|http_req_failed|http_reqs|iterations\.|embedding_ready|crossed" \
+    || kubectl logs "job/${JOB}" -n "${NS}" --tail=40 2>/dev/null || true
+fi
 
 # ---------- 5. optional: empty the RQ queue ----------
 if [ "${FLUSH}" = "1" ]; then

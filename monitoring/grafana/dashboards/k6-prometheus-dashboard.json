@@ -1,50 +1,50 @@
 {
+  "__elements": {},
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS",
-      "label": "${DS_PROMETHEUS}",
       "description": "",
-      "type": "datasource",
+      "label": "${DS_PROMETHEUS}",
+      "name": "DS_PROMETHEUS",
       "pluginId": "${DS_PROMETHEUS}",
-      "pluginName": "Prometheus"
+      "pluginName": "Prometheus",
+      "type": "datasource"
     }
   ],
-  "__elements": {},
   "__requires": [
     {
-      "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
+      "type": "grafana",
       "version": "10.0.0"
     },
     {
-      "type": "datasource",
       "id": "${DS_PROMETHEUS}",
       "name": "Prometheus",
+      "type": "datasource",
       "version": "1.0.0"
     },
     {
-      "type": "panel",
       "id": "stat",
       "name": "Stat",
+      "type": "panel",
       "version": ""
     },
     {
-      "type": "panel",
       "id": "table",
       "name": "Table",
+      "type": "panel",
       "version": ""
     },
     {
-      "type": "panel",
       "id": "text",
       "name": "Text",
+      "type": "panel",
       "version": ""
     },
     {
-      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
+      "type": "panel",
       "version": ""
     }
   ],
@@ -64,12 +64,11 @@
       }
     ]
   },
-  "description": "k6 load-test dashboard with MiraFLIX infra panels (RQ queue, HPA replicas, pod CPU).",
+  "description": "k6 load test metrics, MiraFLIX autoscaling (HPA) and cluster health for node-failure tests",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 19665,
   "graphTooltip": 2,
-  "id": null,
   "links": [
     {
       "asDropdown": false,
@@ -87,12 +86,403 @@
   "liveNow": false,
   "panels": [
     {
-      "id": 2000,
-      "title": "RQ Queue Length (videos)",
-      "type": "timeseries",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 30,
+                "lineWidth": 3,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 1
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "expr": "kube_node_status_condition{condition=\"Ready\", status=\"true\"}",
+              "interval": "15s",
+              "legendFormat": "{{node}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Nodes Ready (1=up, 0=down)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 25,
+                "lineWidth": 2,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "expr": "kube_pod_status_ready{namespace=\"miraflix\", condition=\"true\"}",
+              "interval": "15s",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "MiraFLIX pods Ready",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 25,
+                "lineWidth": 3,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 0,
+            "y": 8
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "expr": "kube_deployment_status_replicas{namespace=\"miraflix\", deployment=\"worker\"}",
+              "interval": "15s",
+              "legendFormat": "worker",
+              "refId": "A"
+            }
+          ],
+          "title": "Worker replicas (HPA)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 25,
+                "lineWidth": 2,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 8,
+            "y": 8
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "expr": "kube_pod_status_ready{namespace=\"miraflix\", pod=~\"backend.*\", condition=\"true\"}",
+              "interval": "15s",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Backend pod Ready",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 25,
+                "lineWidth": 2,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 16,
+            "y": 8
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "expr": "kube_pod_status_ready{namespace=\"miraflix\", pod=~\"postgres.*\", condition=\"true\"}",
+              "interval": "15s",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Postgres pod Ready (RWO volume)",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Cluster Health \u2014 node failure test",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 2006,
+      "panels": [],
+      "title": "Performance Overview",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 2013,
+      "panels": [],
+      "title": "HTTP",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 2018,
+      "panels": [],
+      "title": "Checks",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "${DS_PROMETHEUS}",
         "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Number of jobs waiting in the RQ 'videos' queue. This is the metric that drives the custom HPA (worker-hpa): scale when (jobs)/(workers) > 5.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2
+          },
+          "unit": "short"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -100,106 +490,37 @@
         "x": 0,
         "y": 0
       },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineWidth": 2
-          }
-        },
-        "overrides": []
-      },
+      "id": 2000,
       "targets": [
         {
+          "datasource": {
+            "type": "${DS_PROMETHEUS}",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "expr": "redis_key_size{key=\"rq:queue:videos\"}",
           "legendFormat": "coda",
-          "refId": "A",
-          "datasource": {
-            "type": "${DS_PROMETHEUS}",
-            "uid": "${DS_PROMETHEUS}"
-          }
+          "refId": "A"
         }
       ],
-      "description": "Number of jobs waiting in the RQ 'videos' queue. This is the metric that drives the custom HPA (worker-hpa): scale when (jobs)/(workers) > 5."
+      "title": "RQ Queue Length (videos)",
+      "type": "timeseries"
     },
     {
-      "id": 2001,
-      "title": "Worker replicas (HPA)",
-      "type": "stat",
       "datasource": {
         "type": "${DS_PROMETHEUS}",
         "uid": "${DS_PROMETHEUS}"
       },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 0
-      },
+      "description": "Current worker replicas. Should scale 1\u21928 when the RQ queue grows (custom HPA).",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "color": {
             "mode": "thresholds"
           },
           "thresholds": {
+            "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 4
-              },
               {
                 "color": "red",
-                "value": 7
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
-          "legendFormat": "worker",
-          "refId": "A",
-          "datasource": {
-            "type": "${DS_PROMETHEUS}",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "description": "Current worker replicas. Should scale 1\u21928 when the RQ queue grows (custom HPA)."
-    },
-    {
-      "id": 2002,
-      "title": "Backend replicas (HPA)",
-      "type": "stat",
-      "datasource": {
-        "type": "${DS_PROMETHEUS}",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 0
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "steps": [
-              {
-                "color": "green",
                 "value": null
               },
               {
@@ -207,34 +528,105 @@
                 "value": 2
               },
               {
-                "color": "red",
-                "value": 3
+                "color": "green",
+                "value": 4
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": []
       },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2001,
       "targets": [
         {
-          "expr": "kube_deployment_status_replicas{deployment=\"backend\", namespace=\"miraflix\"}",
-          "legendFormat": "backend",
-          "refId": "A",
           "datasource": {
             "type": "${DS_PROMETHEUS}",
             "uid": "${DS_PROMETHEUS}"
-          }
+          },
+          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
+          "legendFormat": "worker",
+          "refId": "A"
         }
       ],
-      "description": "Current backend replicas (CPU HPA)."
+      "title": "Worker replicas (HPA)",
+      "type": "stat"
     },
     {
-      "id": 2003,
-      "title": "MiraFLIX pod CPU",
-      "type": "timeseries",
       "datasource": {
         "type": "${DS_PROMETHEUS}",
         "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Current backend replicas (CPU HPA).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 2
+              },
+              {
+                "color": "green",
+                "value": 4
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 2002,
+      "targets": [
+        {
+          "datasource": {
+            "type": "${DS_PROMETHEUS}",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "kube_deployment_status_replicas{deployment=\"backend\", namespace=\"miraflix\"}",
+          "legendFormat": "backend",
+          "refId": "A"
+        }
+      ],
+      "title": "Backend replicas (HPA)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "${DS_PROMETHEUS}",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "CPU usage of every MiraFLIX pod (workers included).",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -242,47 +634,29 @@
         "x": 0,
         "y": 4
       },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 2
-          }
-        },
-        "overrides": []
-      },
+      "id": 2003,
       "targets": [
         {
-          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"miraflix\"}[1m]))",
-          "legendFormat": "{{pod}}",
-          "refId": "A",
           "datasource": {
             "type": "${DS_PROMETHEUS}",
             "uid": "${DS_PROMETHEUS}"
-          }
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"miraflix\"}[1m]))",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
         }
       ],
-      "description": "CPU usage of every MiraFLIX pod (workers included)."
+      "title": "MiraFLIX pod CPU",
+      "type": "timeseries"
     },
     {
-      "id": 2004,
-      "title": "RQ Queue vs Worker replicas (the autoscaling story)",
-      "type": "timeseries",
       "datasource": {
         "type": "${DS_PROMETHEUS}",
         "uid": "${DS_PROMETHEUS}"
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
-      },
+      "description": "THE course screenshot: queue grows \u2192 workers scale up \u2192 queue drains \u2192 workers scale down.",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 15,
@@ -295,7 +669,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": [
           {
@@ -306,10 +681,10 @@
             "properties": [
               {
                 "id": "custom.transform",
-                "value": "scale",
                 "properties": {
                   "scale": 1
-                }
+                },
+                "value": "scale"
               },
               {
                 "id": "unit",
@@ -319,27 +694,35 @@
           }
         ]
       },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 2004,
       "targets": [
         {
+          "datasource": {
+            "type": "${DS_PROMETHEUS}",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "expr": "redis_key_size{key=\"rq:queue:videos\"}",
           "legendFormat": "queue jobs",
-          "refId": "A",
-          "datasource": {
-            "type": "${DS_PROMETHEUS}",
-            "uid": "${DS_PROMETHEUS}"
-          }
+          "refId": "A"
         },
         {
-          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
-          "legendFormat": "workers",
-          "refId": "B",
           "datasource": {
             "type": "${DS_PROMETHEUS}",
             "uid": "${DS_PROMETHEUS}"
-          }
+          },
+          "expr": "kube_deployment_status_replicas{deployment=\"worker\", namespace=\"miraflix\"}",
+          "legendFormat": "workers",
+          "refId": "B"
         }
       ],
-      "description": "THE course screenshot: queue grows \u2192 workers scale up \u2192 queue drains \u2192 workers scale down."
+      "title": "RQ Queue vs Worker replicas (the autoscaling story)",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -591,19 +974,6 @@
       ],
       "title": "Performance Overview",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 11
-      },
-      "id": 2006,
-      "panels": [],
-      "title": "Performance Overview",
-      "type": "row"
     },
     {
       "datasource": {
@@ -1086,19 +1456,6 @@
       ],
       "title": "Iterations",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "id": 2013,
-      "panels": [],
-      "title": "HTTP",
-      "type": "row"
     },
     {
       "datasource": {
@@ -1924,19 +2281,6 @@
       "type": "table"
     },
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 39
-      },
-      "id": 2018,
-      "panels": [],
-      "title": "Checks",
-      "type": "row"
-    },
-    {
       "datasource": {
         "type": "${DS_PROMETHEUS}",
         "uid": "${DS_PROMETHEUS}"
@@ -2204,76 +2548,62 @@
       ],
       "title": "Checks Success Rate (aggregate individual checks)",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "${DS_PROMETHEUS}",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 48
-      },
-      "id": 2021,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "### Visualize other k6 results  \n\nAt the top of the dashboard, click `Add` and select `Visualization` from the dropdown menu. Choose the visualization type and input the PromQL queries for the `k6_` metric(s).\n\nAlternatively, click on the `Explore` icon on the menu bar and input the queries for the `k6_` metric(s). From `Explore`, you can add new Panels to this dashboard. \n\nNote that all <a href=\"https://k6.io/docs/using-k6/metrics/\" target=\"_blank\">k6 metrics</a> are prefixed with the `k6_` namespace when sent to Prometheus.",
-        "mode": "markdown"
-      },
-      "type": "text"
     }
   ],
-  "refresh": "",
+  "refresh": "30s",
   "schemaVersion": 39,
   "tags": [
-    "prometheus",
-    "k6"
+    "miraflix",
+    "k6",
+    "k8s",
+    "docker",
+    "hpa"
   ],
   "templating": {
     "list": [
       {
-        "name": "DS_PROMETHEUS",
-        "type": "datasource",
-        "query": "prometheus",
         "current": {},
-        "refresh": 1,
-        "hide": 0,
         "description": "Prometheus datasource (resolved by name: works in k8s and docker)",
-        "regex": ""
+        "hide": 0,
+        "name": "DS_PROMETHEUS",
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
       },
       {
-        "name": "test",
-        "type": "query",
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": {
           "type": "${DS_PROMETHEUS}",
           "uid": "${DS_PROMETHEUS}"
         },
+        "includeAll": true,
+        "multi": true,
+        "name": "test",
         "query": {
           "query": "label_values(k6_http_reqs_total, test)",
           "refId": "A"
         },
         "refresh": 1,
-        "includeAll": true,
-        "allValue": ".*",
-        "multi": true,
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        }
+        "type": "query"
       },
       {
-        "name": "quantile_stat",
-        "type": "custom",
+        "current": {
+          "text": "p95",
+          "value": "p95"
+        },
         "datasource": {
           "type": "${DS_PROMETHEUS}",
           "uid": "${DS_PROMETHEUS}"
         },
+        "description": "Quantile statistic used by latency panels",
+        "includeAll": false,
+        "multi": false,
+        "name": "quantile_stat",
         "options": [
           {
             "text": "p50",
@@ -2292,15 +2622,9 @@
             "value": "p99"
           }
         ],
-        "current": {
-          "text": "p95",
-          "value": "p95"
-        },
         "query": "p50,p90,p95,p99",
         "refresh": 1,
-        "includeAll": false,
-        "multi": false,
-        "description": "Quantile statistic used by latency panels"
+        "type": "custom"
       }
     ]
   },
@@ -2311,8 +2635,6 @@
   "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "",
-  "title": "k6 Prometheus + MiraFLIX",
-  "uid": "ccbb2351-2ae2-462f-ae0e-f2c893ad1028",
-  "version": 3,
+  "title": "MiraFLIX: k6 + Cluster Health",
   "weekStart": ""
 }
