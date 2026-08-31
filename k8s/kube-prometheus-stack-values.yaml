@@ -22,6 +22,18 @@ prometheus:
 
 grafana:
   adminPassword: admin
+  # 2 replicas with anti-affinity: Grafana is stateless (no PVC), so if one
+  # node dies the other replica keeps serving — no Grafana outage on failover
+  replicas: 2
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: grafana
+            topologyKey: kubernetes.io/hostname
   env:
     # Anonymous access (no login) as in the docker compose setup
     GF_AUTH_ANONYMOUS_ENABLED: "true"
