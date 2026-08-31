@@ -60,7 +60,7 @@
 | stress | 5* | 68.20 | 4.25 | 4042 | 545 | 545 | 9.65 | — | 103 |
 | stress | 6* | **19.40** | **44.14** | 521 | 544 | 544 | 4.04 | — | — |
 
-*re-run (see §4) — run 6 is the catastrophic run: the backend died mid-test
+*re-run (see Section 4) — run 6 is the catastrophic run: the backend died mid-test
 
 ### 2.2 k8s (k3s cluster)
 
@@ -88,7 +88,7 @@
 | stress | 5* | 56.26 | 15.59 | 1898 | 497 | 497 | 25.09 | — | — |
 | stress | 6* | 78.19 | 9.69 | 2578 | 531 | 531 | 40.64 | — | — |
 
-*re-run (see §4)
+*re-run (see Section 4)
 
 ---
 
@@ -131,13 +131,67 @@ Latency ratio (k8s / docker): smoke **3.2×**, load **3.2×**, queue **5.3×**, 
 
 ---
 
-## 5. Interpretation
+## 5. Node-failure test (k8s only — docker has no equivalent)
 
-### 5.1 Correctness — identical at normal load
+A worker node was **killed** (soft poweroff) and the cluster was left to
+recover on its own. Docker has no equivalent concept: if the docker host
+dies, the whole stack is down until a human restarts it.
+
+### 5.1 Test 1 — node1 killed (hosted postgres + redis)
+
+| phase | time | measured |
+|---|---|---|
+| kill (ssh poweroff) | 08:50:16 | — |
+| node NotReady (heartbeat timeout) | 08:50:40 | **~24s** |
+| toleration (5 min default, avoids rescheduling on quick reboots) | ~08:55:40 | **5m** |
+| pods recreated on surviving nodes | 08:56–08:59 | **~5m25s from kill** |
+| data after recovery | `SELECT count(*) FROM video` | **14,506 rows intact** |
+| human intervention | — | **none** |
+
+### 5.2 Test 2 — node2 killed (hosted the worker)
+
+| phase | time | measured |
+|---|---|---|
+| kill | 09:37:19 | — |
+| node NotReady | 09:38:11 | **52s** |
+| worker recreated on a surviving node | 09:43:04 | **~5m45s from kill** |
+| image pull on the new node | — | **3s** (already cached) |
+| service health during the whole test | — | **always 200** (backend on master) |
+| human intervention | — | **none** |
+
+### 5.3 What the metrics show
+
+The Prometheus series of the worker pod CPU show a **330s gap**
+(09:38:00 → 09:43:30) matching the failover window exactly — Prometheus
+kept scraping (node-exporter series are continuous) and faithfully recorded
+the *absence* of the worker. The gap is not a monitoring bug: it is the
+visual proof of the failover (toleration 5 min + pod recreation).
+
+### 5.4 Fixes triggered by the test (real-world lessons)
+
+- **Grafana was a single point of failure** (1 replica): when its node died,
+  Grafana was unreachable for the whole failover. Fixed: **2 replicas +
+  podAntiAffinity** (Grafana is stateless, no PVC needed).
+- **Dashboard was imported via API**: with 2 replicas (no shared PVC) each
+  replica has its own DB — the imported dashboard was lost on rollout.
+  Fixed: **ConfigMap provisioned dashboard** (sidecar loads it in every
+  replica; survives rollouts).
+- **The dashboard datasource variable was empty when provisioned**:
+  `DS_PROMETHEUS` needs `current: {Prometheus, prometheus}` in the JSON for
+  the sidecar provisioning (API import resolved it automatically, the
+  sidecar does not).
+- **Legacy `grafana-nodeport` Service removed**: the helm chart now exposes
+  the NodePort itself (the manual Service collided with the chart's port).
+
+---
+
+## 6. Interpretation
+
+### 6.1 Correctness — identical at normal load
 
 All 5 normal-load scenarios (smoke, load, queue, search, stream) pass **100% of checks in both environments**. The application behaves identically; the platform does not change correctness.
 
-### 5.2 Latency — k8s pays the cost of distribution
+### 6.2 Latency — k8s pays the cost of distribution
 
 At the request level k8s is **1.3–5.3× slower** (p95): smoke 90ms vs 28ms, load 104ms vs 33ms, queue 44ms vs 8ms, stream 3.3ms vs 2.3ms. This is the expected cost of the architecture:
 
@@ -147,11 +201,11 @@ At the request level k8s is **1.3–5.3× slower** (p95): smoke 90ms vs 28ms, lo
 
 The E2E iteration time, however, is dominated by the **AI embedding (~3s smoke, ~15s search)** which is equal in both environments — the platform is not the bottleneck for the AI workload, only for the request overhead.
 
-### 5.3 Search — the case that proves HPA is needed
+### 6.3 Search — the case that proves HPA is needed
 
 The search scenario is the most revealing: **docker completes 30-31 iterations, k8s completes 1** (all 3 runs). With a single worker (HPA paused for the baseline), the k8s search pipeline (worker → ollama → pgvector via network) exceeds the 30s k6 poll window and times out. Docker completes because everything is on localhost. The checks still report 100% because the individual HTTP calls (POST 202) succeed — but the **end-to-end search never finishes on k8s with 1 worker**. This is exactly the load that requires the queue-length HPA: it scales the workers so the pipeline keeps up. (With the HPA active in queue/stress, the worker scales 1→8 and the throughput recovers.)
 
-### 5.4 Stress — resilience is the differentiator
+### 6.4 Stress — resilience is the differentiator
 
 Both environments saturate at the ramp peak (vus=200, ~500 dropped iterations in both). The differences:
 
@@ -164,7 +218,7 @@ Both environments saturate at the ramp peak (vus=200, ~500 dropped iterations in
 
 The k8s system processes **2.7× more useful work (embeddings)** under load because the HPA scales the workers — docker has one fixed worker that saturates immediately. In exchange k8s shows more HTTP failures at the peak (it is doing more work against the same load). The decisive fact: **docker can die mid-test (19.4% run), k8s never does.**
 
-### 5.5 Methodology notes (honesty)
+### 6.5 Methodology notes (honesty)
 
 - 3 runs per environment (plus 3 stress re-runs) — enough for the large structural differences, not for fine latency deltas.
 - Stress has high natural variance (breaking point); the *destructive* variance (dead backend) exists **only in docker**.
@@ -173,15 +227,15 @@ The k8s system processes **2.7× more useful work (embeddings)** under load beca
 
 ---
 
-## 6. Conclusion
+## 7. Conclusion
 
 > **k8s trades ~3× request latency (the cost of distribution) for resilience and autoscaling. Correctness is identical (100% checks at normal load). Under stress, the fixed docker worker saturates and the backend can die (1 in 6 runs, manual restart required), while the HPA-driven k8s worker scales 1→8, processes 2.7× more embeddings and never goes down. The search scenario proves why queue-based autoscaling exists: with one worker the distributed pipeline cannot finish E2E within the poll window; docker can, only because everything is on one host.**
 
-## 7. Raw data
+## 8. Raw data
 
 All per-run k6 logs are in `docker/` and `k8s/` (21 files each). The stress
 scenario was run **6 times per environment** (3 in the standard run + 3
 dedicated re-runs) because it is the most informative scenario: it is the
 only one that exposes the resilience difference between the two platforms
-(see §4–§5). Analysis scripts: `analyze.sh`, `deep_analyze.sh`,
+(see Sections 4–6). Analysis scripts: `analyze.sh`, `deep_analyze.sh`,
 `per_run.sh`, `compare_stress.sh`.

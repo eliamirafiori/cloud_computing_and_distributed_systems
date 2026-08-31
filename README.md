@@ -18,7 +18,7 @@ k8s/                          ← 21 raw k6 logs (5 scenarios × 3 runs + stress
 > The stress scenario was run **6 times per environment** (3 standard + 3
 > dedicated re-runs) because it is the most informative scenario: it is the
 > only one that exposes the resilience difference between the two platforms
-> (docker backend can die mid-test, k8s never does). See `bench-results.md` §4.
+> (docker backend can die mid-test, k8s never does). See `bench-results.md` Section 4.
 
 ## Key numbers (summary)
 
