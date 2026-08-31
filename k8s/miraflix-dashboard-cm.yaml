@@ -2571,7 +2571,10 @@ data:
       "templating": {
         "list": [
           {
-            "current": {},
+            "current": {
+              "text": "Prometheus",
+              "value": "prometheus"
+            },
             "description": "Prometheus datasource (resolved by name: works in k8s and docker)",
             "hide": 0,
             "name": "DS_PROMETHEUS",

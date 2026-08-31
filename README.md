@@ -154,13 +154,22 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
 ```
 
 The values file covers: Prometheus storage on NFS (20Gi), **remote-write
-receiver enabled** (required by k6), Grafana anonymous with **NodePort 30001**.
+receiver enabled** (required by k6), Grafana anonymous with **NodePort 30001**
+and **2 replicas with podAntiAffinity** (Grafana is stateless — if a node
+dies, the other replica keeps serving; no Grafana outage during failover).
 
-### 5.2 The dashboard
+### 5.2 The dashboard (provisioned via ConfigMap)
 
-`monitoring/grafana/dashboards/k6-prometheus-dashboard.json` is the **k6
-Prometheus + MiraFLIX** dashboard (22 panels). Import it in Grafana
-(Dashboards → Import) or via API. Highlights:
+The dashboard **MiraFLIX: k6 + Cluster Health** (22 panels) lives in
+`k8s/miraflix-dashboard-cm.yaml` — a ConfigMap labelled `grafana_dashboard=1`
+that the Grafana sidecar picks up automatically and loads into **every
+replica** (no manual import; survives rollouts). Apply it after the stack:
+
+```bash
+kubectl apply -f k8s/miraflix-dashboard-cm.yaml
+```
+
+Highlights:
 
 | Panel | Query |
 |---|---|
