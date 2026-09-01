@@ -2,6 +2,9 @@
 
 ![Miraflix logo](./MIRAFLIX.png)
 
+- [Report](./miraflix_report.pdf)
+- [Presentation](./miraflix_presentation.pdf)
+
 ## MODEL
 
 - [GitHub page for MiniCPM](https://github.com/openbmb/minicpm)
