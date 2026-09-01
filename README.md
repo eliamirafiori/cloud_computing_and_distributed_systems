@@ -1,4 +1,4 @@
-# README
+# MIRAFLIX
 
 ![Miraflix logo](./MIRAFLIX.png)
 
