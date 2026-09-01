@@ -1,5 +1,7 @@
 # README
 
+![Miraflix logo](./MIRAFLIX.png)
+
 ## MODEL
 
 - [GitHub page for MiniCPM](https://github.com/openbmb/minicpm)
